@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="google" content="notranslate">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>人生生存試算器 60年長期財務模型 (含育兒五階段累計看板)</title>
+  <title>人生生存試算器 60年長期財務模型</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     :root {
@@ -163,38 +163,15 @@
       margin-bottom: 12px;
     }
 
-    .child-summary-box {
+    .child-simple-note {
       background: #fffbeb;
-      border: 1.5px solid #fde68a;
-      border-radius: 10px;
-      padding: 12px;
-      margin-top: 10px;
-      font-size: 0.82rem;
-      line-height: 1.6;
-      color: #78350f;
-    }
-
-    .child-summary-box h4 {
-      font-size: 0.88rem;
+      border-left: 4px solid var(--accent);
+      padding: 10px 12px;
+      font-size: 0.8rem;
       color: #92400e;
-      margin-bottom: 6px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-bottom: 1px dashed #fcd34d;
-      padding-bottom: 4px;
-    }
-
-    .child-summary-box ul {
-      list-style-type: none;
-      padding-left: 0;
-      margin: 4px 0 8px 0;
-    }
-
-    .child-summary-box li {
-      margin-bottom: 3px;
-      padding-left: 10px;
-      text-indent: -10px;
+      border-radius: 4px;
+      margin-top: 10px;
+      line-height: 1.5;
     }
 
     .housing-box {
@@ -351,7 +328,7 @@
 <div class="container notranslate">
   <header>
     <h1>人生生存試算器 (60年長期財務模型)</h1>
-    <p>自選起算與退休年齡、育兒五階段通膨累計看板、房貸收支比警示、投資 vs 不投資雙軌對照</p>
+    <p>自選起算與退休年齡、房貸月收入負擔比精算、新青安分段利率、投資 vs 不投資雙軌對照</p>
   </header>
 
   <div class="grid">
@@ -757,9 +734,9 @@
         </div>
 
         <div id="childStagesContainer">
-          <!-- 階段一 -->
+          <!-- 階段一：0~3歲 -->
           <div class="stage-box">
-            <div class="stage-label">🍼 階段一：0～3 歲嬰幼兒期 (每月支出)</div>
+            <div class="stage-label">🍼 階段一：0～3 歲嬰幼兒期 (每月支出，3年共約 84.6 萬)</div>
             <div class="input-row-4">
               <div class="form-group">
                 <label>奶粉伙食</label>
@@ -780,9 +757,9 @@
             </div>
           </div>
 
-          <!-- 階段二 -->
+          <!-- 階段二：3~6歲 -->
           <div class="stage-box">
-            <div class="stage-label">🎨 階段二：3～6 歲幼兒園期 (每月支出)</div>
+            <div class="stage-label">🎨 階段二：3～6 歲幼兒園期 (每月支出，基底約 15,000/月)</div>
             <div class="input-row-3">
               <div class="form-group">
                 <label>幼兒園學費</label>
@@ -799,9 +776,9 @@
             </div>
           </div>
 
-          <!-- 階段三 -->
+          <!-- 階段三：6~12歲 -->
           <div class="stage-box">
-            <div class="stage-label">🎒 階段三：6～12 歲國小期 (每月支出)</div>
+            <div class="stage-label">🎒 階段三：6～12 歲國小期 (每月支出，基底約 12,800/月)</div>
             <div class="input-row-4">
               <div class="form-group">
                 <label>學校雜費</label>
@@ -822,9 +799,9 @@
             </div>
           </div>
 
-          <!-- 階段四 -->
+          <!-- 階段四：12~18歲 -->
           <div class="stage-box">
-            <div class="stage-label">📚 階段四：12～18 歲國高中期 (每月支出)</div>
+            <div class="stage-label">📚 階段四：12～18 歲國高中期 (每月支出，基底約 15,500/月)</div>
             <div class="input-row-3">
               <div class="form-group">
                 <label>學費雜支</label>
@@ -841,9 +818,9 @@
             </div>
           </div>
 
-          <!-- 階段五 -->
+          <!-- 階段五：18~22歲 -->
           <div class="stage-box">
-            <div class="stage-label">🎓 階段五：18～22 歲大學期 (每月支出)</div>
+            <div class="stage-label">🎓 階段五：18～22 歲大學期 (每月支出，基底約 20,000/月)</div>
             <div class="input-row-3">
               <div class="form-group">
                 <label>學雜費(每月攤提)</label>
@@ -860,10 +837,9 @@
             </div>
           </div>
 
-          <!-- 育兒五階段總累計看板 -->
-          <div id="childSummaryCard" class="child-summary-box">
-            <h4>📊 育兒五階段總累計支出（含通膨自動折算）</h4>
-            <div id="childSummaryContent">計算中...</div>
+          <!-- 簡短說明備註 -->
+          <div class="child-simple-note">
+            💡 <strong>育兒預算說明：</strong>以上金額為目前行情基準。模型在推算時會隨小孩年齡自動加入 <strong>3% 年通膨複利</strong>，撫養一名孩子至 22 歲大學畢業，22 年累計總支出約需 <strong>600 萬元以上</strong>（平均每月開銷隨通膨由 2.3 萬逐步遞增至 3.5 萬元）。
           </div>
         </div>
       </div>
@@ -1200,115 +1176,6 @@
              (parseFloat(document.getElementById('c18_allowance').value) || 0);
     }
     return 0;
-  }
-
-  // 渲染育兒五階段總累計看板與通膨折算
-  function updateChildSummaryDisplay() {
-    const childBornAge = parseInt(document.getElementById('childBornAge').value, 10);
-    const summaryContainer = document.getElementById('childSummaryCard');
-    const contentEl = document.getElementById('childSummaryContent');
-
-    if (childBornAge === 0) {
-      summaryContainer.style.display = 'none';
-      return;
-    }
-    summaryContainer.style.display = 'block';
-
-    // 取得各項輸入
-    const c0_milk = parseFloat(document.getElementById('c0_milk').value) || 0;
-    const c0_diaper = parseFloat(document.getElementById('c0_diaper').value) || 0;
-    const c0_care = parseFloat(document.getElementById('c0_care').value) || 0;
-    const c0_ins = parseFloat(document.getElementById('c0_ins').value) || 0;
-    const s1_monthly = c0_milk + c0_diaper + c0_care + c0_ins;
-    const s1_total = s1_monthly * 36;
-
-    const c3_school = parseFloat(document.getElementById('c3_school').value) || 0;
-    const c3_talent = parseFloat(document.getElementById('c3_talent').value) || 0;
-    const c3_daily = parseFloat(document.getElementById('c3_daily').value) || 0;
-
-    // 階段二：第3~6年通膨 3% 複利 (年化累計)
-    let s2_total = 0;
-    for (let yr = 3; yr < 6; yr++) {
-      s2_total += (c3_school + c3_talent + c3_daily) * Math.pow(1.03, yr) * 12;
-    }
-    const s2_avg_monthly = Math.round(s2_total / 36);
-
-    const c6_school = parseFloat(document.getElementById('c6_school').value) || 0;
-    const c6_care = parseFloat(document.getElementById('c6_care').value) || 0;
-    const c6_talent = parseFloat(document.getElementById('c6_talent').value) || 0;
-    const c6_pocket = parseFloat(document.getElementById('c6_pocket').value) || 0;
-
-    // 階段三：第6~12年
-    let s3_total = 0;
-    for (let yr = 6; yr < 12; yr++) {
-      s3_total += (c6_school + c6_care + c6_talent + c6_pocket) * Math.pow(1.03, yr) * 12;
-    }
-    const s3_avg_monthly = Math.round(s3_total / 72);
-
-    const c12_school = parseFloat(document.getElementById('c12_school').value) || 0;
-    const c12_cram = parseFloat(document.getElementById('c12_cram').value) || 0;
-    const c12_pocket = parseFloat(document.getElementById('c12_pocket').value) || 0;
-
-    // 階段四：第12~18年
-    let s4_total = 0;
-    for (let yr = 12; yr < 18; yr++) {
-      s4_total += (c12_school + c12_cram + c12_pocket) * Math.pow(1.03, yr) * 12;
-    }
-    const s4_avg_monthly = Math.round(s4_total / 72);
-
-    const c18_tuition = parseFloat(document.getElementById('c18_tuition').value) || 0;
-    const c18_rent = parseFloat(document.getElementById('c18_rent').value) || 0;
-    const c18_allowance = parseFloat(document.getElementById('c18_allowance').value) || 0;
-
-    // 階段五：第18~22年
-    let s5_total = 0;
-    for (let yr = 18; yr < 22; yr++) {
-      s5_total += (c18_tuition + c18_rent + c18_allowance) * Math.pow(1.03, yr) * 12;
-    }
-    const s5_avg_monthly = Math.round(s5_total / 48);
-
-    const grandTotal = s1_total + s2_total + s3_total + s4_total + s5_total;
-    const grandTotalWan = (grandTotal / 10000).toFixed(1);
-
-    contentEl.innerHTML = `
-      <ul>
-        <li><strong>🍼 階段一：0～3 歲嬰幼兒期（3年，現行行情未計通膨）</strong><br>
-          • 奶粉伙食：NT$ ${formatMoney(c0_milk)}/月（3年累計 NT$ ${formatMoney(c0_milk * 36)} 元）<br>
-          • 尿布耗材：NT$ ${formatMoney(c0_diaper)}/月（3年累計 NT$ ${formatMoney(c0_diaper * 36)} 元）<br>
-          • 托育保母：NT$ ${formatMoney(c0_care)}/月（3年累計 NT$ ${formatMoney(c0_care * 36)} 元）<br>
-          • 幼兒保險：NT$ ${formatMoney(c0_ins)}/月（年繳約 NT$ ${formatMoney(c0_ins * 12)}，3年累計 NT$ ${formatMoney(c0_ins * 36)} 元）<br>
-          👉 <em>本階段小計：每月支出 NT$ ${formatMoney(s1_monthly)} 元，3 年總計 NT$ ${formatMoney(s1_total)} 元</em>
-        </li>
-        <li style="margin-top: 6px;"><strong>🎨 階段二：3～6 歲幼兒園期（3年，通膨折算約 1.093～1.159 倍）</strong><br>
-          • 幼兒園學費：原估 NT$ ${formatMoney(c3_school)}/月，通膨後平均約 NT$ ${formatMoney(c3_school * 1.125)}/月，3年約 NT$ ${formatMoney(c3_school * 1.125 * 36)} 元<br>
-          • 早期啟蒙才藝：原估 NT$ ${formatMoney(c3_talent)}/月，通膨後平均約 NT$ ${formatMoney(c3_talent * 1.125)}/月，3年約 NT$ ${formatMoney(c3_talent * 1.125 * 36)} 元<br>
-          • 飲食衣物日常：原估 NT$ ${formatMoney(c3_daily)}/月，通膨後平均約 NT$ ${formatMoney(c3_daily * 1.125)}/月，3年約 NT$ ${formatMoney(c3_daily * 1.125 * 36)} 元<br>
-          👉 <em>本階段小計：通膨後每月平均約 NT$ ${formatMoney(s2_avg_monthly)} 元，3 年總計約 NT$ ${formatMoney(s2_total)} 元</em>
-        </li>
-        <li style="margin-top: 6px;"><strong>🎒 階段三：6～12 歲國小期（6年，通膨折算約 1.194～1.384 倍）</strong><br>
-          • 學校雜費：原估 NT$ ${formatMoney(c6_school)}/月，6年通膨累計約 NT$ ${formatMoney(c6_school * 1.287 * 72)} 元<br>
-          • 課後安親班：原估 NT$ ${formatMoney(c6_care)}/月，6年通膨累計約 NT$ ${formatMoney(c6_care * 1.287 * 72)} 元<br>
-          • 才藝補習：原估 NT$ ${formatMoney(c6_talent)}/月，6年通膨累計約 NT$ ${formatMoney(c6_talent * 1.287 * 72)} 元<br>
-          • 零用錢：原估 NT$ ${formatMoney(c6_pocket)}/月，6年通膨累計約 NT$ ${formatMoney(c6_pocket * 1.287 * 72)} 元<br>
-          👉 <em>本階段小計：通膨後每月平均約 NT$ ${formatMoney(s3_avg_monthly)} 元，6 年總計約 NT$ ${formatMoney(s3_total)} 元</em>
-        </li>
-        <li style="margin-top: 6px;"><strong>📚 階段四：12～18 歲國高中期（6年，通膨折算約 1.426～1.653 倍）</strong><br>
-          • 學費雜支：原估 NT$ ${formatMoney(c12_school)}/月，6年通膨累計約 NT$ ${formatMoney(c12_school * 1.537 * 72)} 元<br>
-          • 升學補習班：原估 NT$ ${formatMoney(c12_cram)}/月，6年通膨累計約 NT$ ${formatMoney(c12_cram * 1.537 * 72)} 元<br>
-          • 零用錢：原估 NT$ ${formatMoney(c12_pocket)}/月，6年通膨累計約 NT$ ${formatMoney(c12_pocket * 1.537 * 72)} 元<br>
-          👉 <em>本階段小計：通膨後每月平均約 NT$ ${formatMoney(s4_avg_monthly)} 元，6 年總計約 NT$ ${formatMoney(s4_total)} 元</em>
-        </li>
-        <li style="margin-top: 6px;"><strong>🎓 階段五：18～22 歲大學期（4年，通膨折算約 1.702～1.860 倍）</strong><br>
-          • 學雜費(月攤)：原估 NT$ ${formatMoney(c18_tuition)}/月，4年通膨累計約 NT$ ${formatMoney(c18_tuition * 1.78 * 48)} 元<br>
-          • 宿舍外宿租金：原估 NT$ ${formatMoney(c18_rent)}/月，4年通膨累計約 NT$ ${formatMoney(c18_rent * 1.78 * 48)} 元<br>
-          • 生活伙食津貼：原估 NT$ ${formatMoney(c18_allowance)}/月，4年通膨累計約 NT$ ${formatMoney(c18_allowance * 1.78 * 48)} 元<br>
-          👉 <em>本階段小計：通膨後每月平均約 NT$ ${formatMoney(s5_avg_monthly)} 元，4 年總計約 NT$ ${formatMoney(s5_total)} 元</em>
-        </li>
-      </ul>
-      <div style="background:#fef3c7; padding:8px 10px; border-radius:6px; font-weight:800; color:#92400e; margin-top:8px; border-left:4px solid var(--accent);">
-        ✨ 全階段 22 年原表項目累計總支出：NT$ ${formatMoney(grandTotal)} 元（約 ${grandTotalWan} 萬元）。
-      </div>
-    `;
   }
 
   function calculate() {
@@ -1838,7 +1705,6 @@
       * <strong>若堅持分階段投資 ETF</strong>：85 歲時身家總資產比不投資<strong>多出約 NT$ ${formatMoney(finalDiffWan)} 萬元</strong>，退休後更有每月數萬至十幾萬的被動配息現金流，達成終身資產不歸零！
     `;
 
-    updateChildSummaryDisplay();
     updateLineChart(annualLabels, annualStock, annualSavings, annualTotalNet, annualNoInvestNet);
   }
 
