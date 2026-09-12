@@ -844,7 +844,7 @@
         </div>
       </div>
 
-      <!-- 投資提撥 (分階段設定) -->
+      <!-- 投資提撥 (分階段設定：全面各 3000 起始) -->
       <div class="section-subtitle">📈 投資提撥 (自訂各階每月投入)</div>
       <div id="investStagesContainer">
         <!-- 25~29歲 -->
@@ -853,11 +853,11 @@
           <div class="input-row">
             <div class="form-group">
               <label>市值型 ETF (NT$)</label>
-              <input type="number" id="inv50_25" value="10000" step="1000" oninput="calculate()">
+              <input type="number" id="inv50_25" value="3000" step="1000" oninput="calculate()">
             </div>
             <div class="form-group">
               <label>高股息 ETF (NT$)</label>
-              <input type="number" id="inv19_25" value="0" step="1000" oninput="calculate()">
+              <input type="number" id="inv19_25" value="3000" step="1000" oninput="calculate()">
             </div>
           </div>
         </div>
@@ -868,11 +868,11 @@
           <div class="input-row">
             <div class="form-group">
               <label>市值型 ETF (NT$)</label>
-              <input type="number" id="inv50_30" value="20000" step="1000" oninput="calculate()">
+              <input type="number" id="inv50_30" value="3000" step="1000" oninput="calculate()">
             </div>
             <div class="form-group">
               <label>高股息 ETF (NT$)</label>
-              <input type="number" id="inv19_30" value="0" step="1000" oninput="calculate()">
+              <input type="number" id="inv19_30" value="3000" step="1000" oninput="calculate()">
             </div>
           </div>
         </div>
@@ -883,11 +883,11 @@
           <div class="input-row">
             <div class="form-group">
               <label>市值型 ETF (NT$)</label>
-              <input type="number" id="inv50_35" value="20000" step="1000" oninput="calculate()">
+              <input type="number" id="inv50_35" value="3000" step="1000" oninput="calculate()">
             </div>
             <div class="form-group">
               <label>高股息 ETF (NT$)</label>
-              <input type="number" id="inv19_35" value="0" step="1000" oninput="calculate()">
+              <input type="number" id="inv19_35" value="3000" step="1000" oninput="calculate()">
             </div>
           </div>
         </div>
@@ -898,11 +898,11 @@
           <div class="input-row">
             <div class="form-group">
               <label>市值型 ETF (NT$)</label>
-              <input type="number" id="inv50_45" value="25000" step="1000" oninput="calculate()">
+              <input type="number" id="inv50_45" value="3000" step="1000" oninput="calculate()">
             </div>
             <div class="form-group">
               <label>高股息 ETF (NT$)</label>
-              <input type="number" id="inv19_45" value="0" step="1000" oninput="calculate()">
+              <input type="number" id="inv19_45" value="3000" step="1000" oninput="calculate()">
             </div>
           </div>
         </div>
@@ -913,11 +913,11 @@
           <div class="input-row">
             <div class="form-group">
               <label>市值型 ETF (NT$)</label>
-              <input type="number" id="inv50_55" value="10000" step="1000" oninput="calculate()">
+              <input type="number" id="inv50_55" value="3000" step="1000" oninput="calculate()">
             </div>
             <div class="form-group">
               <label>高股息 ETF (NT$)</label>
-              <input type="number" id="inv19_55" value="15000" step="1000" oninput="calculate()">
+              <input type="number" id="inv19_55" value="3000" step="1000" oninput="calculate()">
             </div>
           </div>
         </div>
@@ -928,11 +928,11 @@
           <div class="input-row">
             <div class="form-group">
               <label>市值型 ETF (NT$)</label>
-              <input type="number" id="inv50_65" value="0" step="1000" oninput="calculate()">
+              <input type="number" id="inv50_65" value="3000" step="1000" oninput="calculate()">
             </div>
             <div class="form-group">
               <label>高股息 ETF (NT$)</label>
-              <input type="number" id="inv19_65" value="0" step="1000" oninput="calculate()">
+              <input type="number" id="inv19_65" value="3000" step="1000" oninput="calculate()">
             </div>
           </div>
         </div>
@@ -1660,7 +1660,7 @@
       <tr><td>每月居住成本 (${isBuyStrategy ? '房貸/稅/租' : '房租'})</td>${ageList.map(a => `<td>${formatMoney(milestoneData[a].housing)}</td>`).join('')}</tr>
       <tr><td>每月基礎開銷 (含管理費與雜支)</td>${ageList.map(a => `<td>${formatMoney(milestoneData[a].living - milestoneData[a].child)}</td>`).join('')}</tr>
       <tr class="sub-row"><td> └ 其中：大樓管理費</td>${ageList.map(a => `<td>${formatMoney(milestoneData[a].maint)}</td>`).join('')}</tr>
-      <tr><td>每月小孩教育育兒開銷</td>${ageList.map(a => `<td>${formatMoney(milestoneData[a].child)}</td>`).join('')}</tr>
+      <tr><td>每月小孩教育育修開銷</td>${ageList.map(a => `<td>${formatMoney(milestoneData[a].child)}</td>`).join('')}</tr>
       <tr><td>每月投資提撥 (分階段)</td>${ageList.map(a => `<td>${formatMoney(milestoneData[a].invest)}</td>`).join('')}</tr>
       <tr><td><strong>每月留存活存結餘</strong></td>${ageList.map(a => `<td><strong style="color:${milestoneData[a].surplus >= 0 ? 'var(--text)' : 'var(--danger)'}">${formatMoney(milestoneData[a].surplus)}</strong></td>`).join('')}</tr>
       <tr style="background:#f8fafc"><td><strong>股票投資資產總額</strong></td>${ageList.map(a => `<td><strong style="color:var(--primary-dark)">${formatMoney(milestoneData[a].stock)}</strong></td>`).join('')}</tr>
