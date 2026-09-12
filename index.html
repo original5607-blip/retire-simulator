@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>人生生存試算器 60年長期財務模型 (社群公開版)</title>
+  <title>人生生存試算器 60年長期財務模型 (社群精簡版)</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     :root {
@@ -128,6 +128,10 @@
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 10px;
+    }
+
+    .input-row.single-col {
+      grid-template-columns: 1fr;
     }
 
     .input-row-3 {
@@ -342,15 +346,15 @@
       </div>
 
       <div class="section-subtitle">💵 收入與薪資模式</div>
-      <div class="input-row">
+      <div class="input-row" id="salaryHeaderRow">
         <div class="form-group">
           <label>薪水模式</label>
           <select id="salaryMode" onchange="handleSalaryModeChange()">
-            <option value="single">單薪模式 (預設 35,000)</option>
-            <option value="double" selected>雙薪模式 (預設 合計 90,000)</option>
+            <option value="single">單薪模式</option>
+            <option value="double" selected>雙薪模式</option>
           </select>
         </div>
-        <div class="form-group">
+        <div class="form-group" id="genderCol">
           <label>主要填表方性別 (影響產假判定)</label>
           <select id="userGender" onchange="calculate()">
             <option value="male" selected>我是男生 (另一半為女生)</option>
@@ -532,7 +536,7 @@
         </div>
       </div>
 
-      <!-- 居住規劃專區 (含房貸月收入比設定與警示) -->
+      <!-- 居住規劃專區 -->
       <div class="section-subtitle">🏠 居住模式與購屋規劃</div>
       <div class="housing-box">
         <div class="form-group">
@@ -595,7 +599,6 @@
               </select>
             </div>
 
-            <!-- 新青安利率輸入框 -->
             <div id="rowQingAnRate" class="input-row">
               <div class="form-group">
                 <label>前5年新青安優惠利率 (%)</label>
@@ -607,7 +610,6 @@
               </div>
             </div>
 
-            <!-- 一般貸款利率輸入框 -->
             <div id="rowRegularRate" class="form-group" style="display:none;">
               <label>自談房貸年利率 (%)</label>
               <input type="number" id="mortgageRateRegular" value="2.2" step="0.05" oninput="calculate()">
@@ -616,7 +618,7 @@
             <div class="form-group">
               <label>寬限期選擇</label>
               <select id="gracePeriod" onchange="calculate()">
-                <!-- 動態切換 -->
+                <!-- 動態注入 -->
               </select>
             </div>
           </div>
@@ -1027,14 +1029,22 @@
 
   function handleSalaryModeChange() {
     const isDouble = (document.getElementById('salaryMode').value === 'double');
-    document.getElementById('spouseSalaryBox').style.display = isDouble ? 'block' : 'none';
+    const spouseBox = document.getElementById('spouseSalaryBox');
+    const genderCol = document.getElementById('genderCol');
+    const salaryHeaderRow = document.getElementById('salaryHeaderRow');
     const selfInput = document.getElementById('baseSalarySelf');
     const lblSelf = document.getElementById('lbl_baseSalarySelf');
 
     if (isDouble) {
+      spouseBox.style.display = 'block';
+      genderCol.style.display = 'block';
+      salaryHeaderRow.classList.remove('single-col');
       lblSelf.textContent = '我的起始月薪 (NT$)';
-      if (parseFloat(selfInput.value) <= 38000) selfInput.value = 45000;
+      if (parseFloat(selfInput.value) <= 35000) selfInput.value = 45000;
     } else {
+      spouseBox.style.display = 'none';
+      genderCol.style.display = 'none';
+      salaryHeaderRow.classList.add('single-col');
       lblSelf.textContent = '起算年齡月薪總額 (NT$)';
       selfInput.value = 35000;
     }
@@ -1169,7 +1179,7 @@
     const mortgageYears = parseInt(document.getElementById('mortgageTotalYears').value, 10);
     const parentsHelp = isBuyStrategy ? (parseFloat(document.getElementById('parentsHelp').value) || 0) : 0;
     const graceYears = parseInt(document.getElementById('gracePeriod').value, 10);
-    const targetDsr = parseFloat(document.getElementById('targetDsr').value) || 35; // 使用者自訂負擔比上限
+    const targetDsr = parseFloat(document.getElementById('targetDsr').value) || 35;
 
     const planType = document.getElementById('mortgagePlanType').value;
     const isQingAn = (planType === 'qing_an');
@@ -1385,7 +1395,7 @@
 
       if (currentAge < retireAge) {
         let fullSalarySelf = Math.round(baseSalarySelf * Math.pow(1.02, yr));
-        if (userGender === 'female' && isMaternityPhase) {
+        if (isDoubleMode && userGender === 'female' && isMaternityPhase) {
           monthlySalarySelf = Math.round(fullSalarySelf * maternityPayRatio);
         } else {
           monthlySalarySelf = fullSalarySelf;
@@ -1531,7 +1541,6 @@
       annualNoInvestNet.push(noInvestSavings);
     }
 
-    // 房貸負擔比 DSR 核心精算
     const postGraceFirstPayment = getMortgagePayment(graceYears);
     const actualDsr = (buyYearMonthlyIncome > 0) ? Math.round((postGraceFirstPayment / buyYearMonthlyIncome) * 100) : 0;
 
