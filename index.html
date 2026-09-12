@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="google" content="notranslate">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>人生生存試算器 60年長期財務模型</title>
+  <title>人生生存試算器 60年長期財務模型 (真實張數配息版)</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     :root {
@@ -328,7 +328,7 @@
 <div class="container notranslate">
   <header>
     <h1>人生生存試算器 (60年長期財務模型)</h1>
-    <p>自選起算與退休年齡、房貸月收入負擔比精算、新青安分段利率、投資 vs 不投資雙軌對照</p>
+    <p>自選起算與退休年齡、真實張數配息估算(不灌水漲幅)、新青安分段利率、投資雙軌對照</p>
   </header>
 
   <div class="grid">
@@ -734,7 +734,6 @@
         </div>
 
         <div id="childStagesContainer">
-          <!-- 階段一：0~3歲 -->
           <div class="stage-box">
             <div class="stage-label">🍼 階段一：0～3 歲嬰幼兒期 (每月支出，3年共約 84.6 萬)</div>
             <div class="input-row-4">
@@ -757,7 +756,6 @@
             </div>
           </div>
 
-          <!-- 階段二：3~6歲 -->
           <div class="stage-box">
             <div class="stage-label">🎨 階段二：3～6 歲幼兒園期 (每月支出，基底約 15,000/月)</div>
             <div class="input-row-3">
@@ -776,7 +774,6 @@
             </div>
           </div>
 
-          <!-- 階段三：6~12歲 -->
           <div class="stage-box">
             <div class="stage-label">🎒 階段三：6～12 歲國小期 (每月支出，基底約 12,800/月)</div>
             <div class="input-row-4">
@@ -799,7 +796,6 @@
             </div>
           </div>
 
-          <!-- 階段四：12~18歲 -->
           <div class="stage-box">
             <div class="stage-label">📚 階段四：12～18 歲國高中期 (每月支出，基底約 15,500/月)</div>
             <div class="input-row-3">
@@ -818,7 +814,6 @@
             </div>
           </div>
 
-          <!-- 階段五：18~22歲 -->
           <div class="stage-box">
             <div class="stage-label">🎓 階段五：18～22 歲大學期 (每月支出，基底約 20,000/月)</div>
             <div class="input-row-3">
@@ -837,14 +832,13 @@
             </div>
           </div>
 
-          <!-- 簡短說明備註 -->
           <div class="child-simple-note">
             💡 <strong>育兒預算說明：</strong>以上金額為目前行情基準。模型在推算時會隨小孩年齡自動加入 <strong>3% 年通膨複利</strong>，撫養一名孩子至 22 歲大學畢業，22 年累計總支出約需 <strong>600 萬元以上</strong>（平均每月開銷隨通膨由 2.3 萬逐步遞增至 3.5 萬元）。
           </div>
         </div>
       </div>
 
-      <!-- 投資提撥 (分階段設定：全面各 3000 起始) -->
+      <!-- 投資提撥 (分階段設定) -->
       <div class="section-subtitle">📈 投資提撥 (自訂各階每月投入)</div>
       <div id="investStagesContainer">
         <!-- 25~29歲 -->
@@ -868,11 +862,11 @@
           <div class="input-row">
             <div class="form-group">
               <label>市值型 ETF (NT$)</label>
-              <input type="number" id="inv50_30" value="3000" step="1000" oninput="calculate()">
+              <input type="number" id="inv50_30" value="30000" step="1000" oninput="calculate()">
             </div>
             <div class="form-group">
               <label>高股息 ETF (NT$)</label>
-              <input type="number" id="inv19_30" value="3000" step="1000" oninput="calculate()">
+              <input type="number" id="inv19_30" value="20000" step="1000" oninput="calculate()">
             </div>
           </div>
         </div>
@@ -883,11 +877,11 @@
           <div class="input-row">
             <div class="form-group">
               <label>市值型 ETF (NT$)</label>
-              <input type="number" id="inv50_35" value="3000" step="1000" oninput="calculate()">
+              <input type="number" id="inv50_35" value="20000" step="1000" oninput="calculate()">
             </div>
             <div class="form-group">
               <label>高股息 ETF (NT$)</label>
-              <input type="number" id="inv19_35" value="3000" step="1000" oninput="calculate()">
+              <input type="number" id="inv19_35" value="15000" step="1000" oninput="calculate()">
             </div>
           </div>
         </div>
@@ -898,11 +892,11 @@
           <div class="input-row">
             <div class="form-group">
               <label>市值型 ETF (NT$)</label>
-              <input type="number" id="inv50_45" value="3000" step="1000" oninput="calculate()">
+              <input type="number" id="inv50_45" value="15000" step="1000" oninput="calculate()">
             </div>
             <div class="form-group">
               <label>高股息 ETF (NT$)</label>
-              <input type="number" id="inv19_45" value="3000" step="1000" oninput="calculate()">
+              <input type="number" id="inv19_45" value="10000" step="1000" oninput="calculate()">
             </div>
           </div>
         </div>
@@ -913,11 +907,11 @@
           <div class="input-row">
             <div class="form-group">
               <label>市值型 ETF (NT$)</label>
-              <input type="number" id="inv50_55" value="3000" step="1000" oninput="calculate()">
+              <input type="number" id="inv50_55" value="10000" step="1000" oninput="calculate()">
             </div>
             <div class="form-group">
               <label>高股息 ETF (NT$)</label>
-              <input type="number" id="inv19_55" value="3000" step="1000" oninput="calculate()">
+              <input type="number" id="inv19_55" value="15000" step="1000" oninput="calculate()">
             </div>
           </div>
         </div>
@@ -928,11 +922,11 @@
           <div class="input-row">
             <div class="form-group">
               <label>市值型 ETF (NT$)</label>
-              <input type="number" id="inv50_65" value="3000" step="1000" oninput="calculate()">
+              <input type="number" id="inv50_65" value="0" step="1000" oninput="calculate()">
             </div>
             <div class="form-group">
               <label>高股息 ETF (NT$)</label>
-              <input type="number" id="inv19_65" value="3000" step="1000" oninput="calculate()">
+              <input type="number" id="inv19_65" value="0" step="1000" oninput="calculate()">
             </div>
           </div>
         </div>
@@ -941,9 +935,9 @@
       <div class="form-group" style="margin-top: 10px;">
         <label>累積期配息策略</label>
         <select id="dividendPolicy" onchange="calculate()">
-          <option value="all_reinvest" selected>全期再投入 (退休後才開始提領)</option>
+          <option value="all_reinvest">全期再投入 (退休後才開始提領)</option>
           <option value="from_0">全期領出 (第 0 年起領出)</option>
-          <option value="from_10">第 10 年起提領</option>
+          <option value="from_10" selected>第 10 年起提領 (滿10年開始領)</option>
           <option value="from_20">第 20 年起提領</option>
           <option value="from_30">第 30 年起提領</option>
           <option value="from_40">退休前第 10 年提領 (55歲開始)</option>
@@ -1365,9 +1359,12 @@
     }
 
     let currentSavings = initSavings;
-    let currentStock = initStock;
     let downPaymentDeducted = false;
     let noInvestSavings = initSavings + initStock;
+
+    // 【真實張數與市值累積模型】
+    let totalShares50 = (initStock * 0.6) / 80;  // 假設初始股票60%為市值型(基準價80元)
+    let totalShares19 = (initStock * 0.4) / 22;  // 假設初始股票40%為高股息(基準價22元)
 
     const milestoneData = {};
     const compareMilestone = {
@@ -1452,6 +1449,7 @@
         buyYearMonthlyIncome = totalMonthlyEarned;
       }
 
+      // 判定提領配息條件
       let withdrawDiv = false;
       if (currentAge >= retireAge) {
         withdrawDiv = true;
@@ -1470,7 +1468,14 @@
       const invObj = getStageInvestment(currentAge);
       const curInv = invObj.inv50 + invObj.inv19;
 
-      const monthlyDividend = (withdrawDiv && currentStock > 0) ? Math.round((currentStock * 0.045) / 12) : 0;
+      // 【真實張數配息核心算法：絕不用市值漲幅灌水】
+      // 市值型基準配息 3.0 元/股 (每年每張3000元)
+      // 高股息基準配息 1.8 元/股 (每年每張1800元)
+      const annualDiv50 = (totalShares50 / 1000) * 3000;
+      const annualDiv19 = (totalShares19 / 1000) * 1800;
+      const actualTotalAnnualDiv = annualDiv50 + annualDiv19;
+      const monthlyDividend = (withdrawDiv && (totalShares50 + totalShares19) > 0) ? Math.round(actualTotalAnnualDiv / 12) : 0;
+
       const monthlyPension = (currentAge >= retireAge) ? pensionMonthly : 0;
 
       let monthlyHousing = 0;
@@ -1507,6 +1512,11 @@
       const noInvestExpense = monthlyHousing + monthlyLiving;
       const noInvestSurplus = noInvestIncome - noInvestExpense;
 
+      // 當年股價 (市值型每年漲7%價差、高股息每年漲2%)
+      const curPrice50 = 80 * Math.pow(1.07, yr);
+      const curPrice19 = 22 * Math.pow(1.02, yr);
+      const currentStockMarketValue = Math.round(totalShares50 * curPrice50 + totalShares19 * curPrice19);
+
       if (ageList.includes(currentAge)) {
         milestoneData[currentAge] = {
           salarySelf: monthlySalarySelf,
@@ -1523,18 +1533,30 @@
           child: monthlyChild,
           invest: curInv,
           surplus: monthlySurplus,
-          stock: currentStock,
-          savings: currentSavings
+          stock: currentStockMarketValue,
+          savings: currentSavings,
+          shares50: Math.round(totalShares50 / 1000),
+          shares19: Math.round(totalShares19 / 1000)
         };
 
-        compareMilestone.investNet[currentAge] = currentStock + currentSavings;
+        compareMilestone.investNet[currentAge] = currentStockMarketValue + currentSavings;
         compareMilestone.noInvestNet[currentAge] = noInvestSavings;
         compareMilestone.investSurplus[currentAge] = monthlySurplus;
         compareMilestone.noInvestSurplus[currentAge] = noInvestSurplus;
       }
 
-      const annualStockGrowthRate = withdrawDiv ? 0.06 : 0.09;
-      currentStock = Math.round(currentStock * (1 + annualStockGrowthRate) + (curInv * 12));
+      // 年度買入新張數累積 (如果配息不領出再投入，則併入本金買張數)
+      let annualBuy50 = invObj.inv50 * 12;
+      let annualBuy19 = invObj.inv19 * 12;
+      if (!withdrawDiv && actualTotalAnnualDiv > 0) {
+        // 配息全數再投入買零股
+        annualBuy50 += (actualTotalAnnualDiv * 0.5);
+        annualBuy19 += (actualTotalAnnualDiv * 0.5);
+      }
+
+      // 依當年最新股價折算買到的股數 (股價越高，買到的張數越少，極度符合真實世界)
+      totalShares50 += (annualBuy50 / curPrice50);
+      totalShares19 += (annualBuy19 / curPrice19);
 
       if (monthlySurplus >= 0) {
         currentSavings = Math.round(currentSavings * 1.01 + (monthlySurplus * 12));
@@ -1548,7 +1570,7 @@
         noInvestSavings += (noInvestSurplus * 12);
       }
 
-      const netWorthYear = currentStock + currentSavings;
+      const netWorthYear = currentStockMarketValue + currentSavings;
       if (netWorthYear < 0 && bankruptcyAge === null) {
         bankruptcyAge = currentAge;
       }
@@ -1557,7 +1579,7 @@
       }
 
       annualLabels.push(`${currentAge}歲`);
-      annualStock.push(currentStock);
+      annualStock.push(currentStockMarketValue);
       annualSavings.push(currentSavings);
       annualTotalNet.push(netWorthYear);
       annualNoInvestNet.push(noInvestSavings);
@@ -1655,15 +1677,16 @@
       <tr style="background:#f1f5f9; font-weight:700;"><td>月總收入 (合計)</td>${ageList.map(a => `<td>${formatMoney(milestoneData[a].totalIncome)}</td>`).join('')}</tr>
       <tr class="sub-row"><td> ├ 本人薪資 (含獎金)</td>${ageList.map(a => `<td>${formatMoney(milestoneData[a].salarySelf + milestoneData[a].bonusSelf)}</td>`).join('')}</tr>
       ${isDoubleMode ? `<tr class="sub-row" style="color:var(--purple)"><td> ├ 另一半薪獎 (${marryAge}歲結婚起算)</td>${ageList.map(a => `<td>${formatMoney(milestoneData[a].salarySpouse + milestoneData[a].bonusSpouse)}</td>`).join('')}</tr>` : ''}
-      <tr class="sub-row"><td> ├ 每月股票配息收入</td>${ageList.map(a => `<td style="color:${milestoneData[a].dividend > 0 ? 'var(--primary-dark)' : 'inherit'}; font-weight:${milestoneData[a].dividend > 0 ? '700' : 'normal'}">${formatMoney(milestoneData[a].dividend)}</td>`).join('')}</tr>
+      <tr class="sub-row"><td> ├ 每月股票真實配息 (依張數計算)</td>${ageList.map(a => `<td style="color:${milestoneData[a].dividend > 0 ? 'var(--primary-dark)' : 'inherit'}; font-weight:${milestoneData[a].dividend > 0 ? '700' : 'normal'}">${formatMoney(milestoneData[a].dividend)}</td>`).join('')}</tr>
+      <tr class="sub-row" style="font-size:0.72rem; color:#8b5cf6;"><td> │ └ 累計持有：市值型 / 高股息</td>${ageList.map(a => `<td>${milestoneData[a].shares50}張 / ${milestoneData[a].shares19}張</td>`).join('')}</tr>
       <tr class="sub-row"><td> └ 每月退休勞保勞退年金</td>${ageList.map(a => `<td>${formatMoney(milestoneData[a].pension)}</td>`).join('')}</tr>
       <tr><td>每月居住成本 (${isBuyStrategy ? '房貸/稅/租' : '房租'})</td>${ageList.map(a => `<td>${formatMoney(milestoneData[a].housing)}</td>`).join('')}</tr>
       <tr><td>每月基礎開銷 (含管理費與雜支)</td>${ageList.map(a => `<td>${formatMoney(milestoneData[a].living - milestoneData[a].child)}</td>`).join('')}</tr>
       <tr class="sub-row"><td> └ 其中：大樓管理費</td>${ageList.map(a => `<td>${formatMoney(milestoneData[a].maint)}</td>`).join('')}</tr>
-      <tr><td>每月小孩教育育修開銷</td>${ageList.map(a => `<td>${formatMoney(milestoneData[a].child)}</td>`).join('')}</tr>
+      <tr><td>每月小孩教育育兒開銷</td>${ageList.map(a => `<td>${formatMoney(milestoneData[a].child)}</td>`).join('')}</tr>
       <tr><td>每月投資提撥 (分階段)</td>${ageList.map(a => `<td>${formatMoney(milestoneData[a].invest)}</td>`).join('')}</tr>
       <tr><td><strong>每月留存活存結餘</strong></td>${ageList.map(a => `<td><strong style="color:${milestoneData[a].surplus >= 0 ? 'var(--text)' : 'var(--danger)'}">${formatMoney(milestoneData[a].surplus)}</strong></td>`).join('')}</tr>
-      <tr style="background:#f8fafc"><td><strong>股票投資資產總額</strong></td>${ageList.map(a => `<td><strong style="color:var(--primary-dark)">${formatMoney(milestoneData[a].stock)}</strong></td>`).join('')}</tr>
+      <tr style="background:#f8fafc"><td><strong>股票投資資產總市值 (含漲幅)</strong></td>${ageList.map(a => `<td><strong style="color:var(--primary-dark)">${formatMoney(milestoneData[a].stock)}</strong></td>`).join('')}</tr>
       <tr style="background:#f8fafc"><td><strong>活存存款累計總額</strong></td>${ageList.map(a => `<td><span style="color:${milestoneData[a].savings >= 0 ? 'var(--text)' : 'var(--danger)'}">${formatMoney(milestoneData[a].savings)}</span></td>`).join('')}</tr>
     `;
 
@@ -1677,7 +1700,7 @@
         ${ageList.map(a => `<td style="color:var(--primary-dark)">${formatMoney(compareMilestone.investNet[a])}</td>`).join('')}
       </tr>
       <tr class="sub-row">
-        <td> └ 退休後每月現金流結餘</td>
+        <td> └ 退休後每月現金流結餘 (真實張數配息)</td>
         ${ageList.map(a => `<td style="color:${compareMilestone.investSurplus[a] >= 0 ? 'var(--primary-dark)' : 'var(--danger)'}">${formatMoney(compareMilestone.investSurplus[a])}</td>`).join('')}
       </tr>
       <tr style="background:#fef2f2; font-weight:700;">
@@ -1701,8 +1724,9 @@
     const finalDiffWan = ((compareMilestone.investNet[endAge] - compareMilestone.noInvestNet[endAge]) / 10000).toFixed(0);
     compareTip.innerHTML = `
       <strong>💡 投資與不投資關鍵差距結論：</strong><br>
-      * <strong>若不投資純放銀行</strong>：因缺乏年化 9% 複利滾存與每年 4.5% 配息分擔開銷，面對 3% 通膨，存款將在 <strong>${noInvestBankruptcyAge ? noInvestBankruptcyAge + ' 歲' : '85 歲前'}</strong> 提前耗盡翻負。<br>
-      * <strong>若堅持分階段投資 ETF</strong>：85 歲時身家總資產比不投資<strong>多出約 NT$ ${formatMoney(finalDiffWan)} 萬元</strong>，退休後更有每月數萬至十幾萬的被動配息現金流，達成終身資產不歸零！
+      * <strong>真實張數估算</strong>：配息嚴格依實際買到的「ETF 累積張數」乘以現金股利計算，絕不把股價 7% 漲幅灌水進配息，數據完全接地氣！<br>
+      * <strong>若不投資純放銀行</strong>：面對 3% 物價通膨，存款將在 <strong>${noInvestBankruptcyAge ? noInvestBankruptcyAge + ' 歲' : '85 歲前'}</strong> 提前耗盡翻負。<br>
+      * <strong>若堅持分階段投資 ETF</strong>：85 歲時身家總資產比不投資<strong>多出約 NT$ ${formatMoney(finalDiffWan)} 萬元</strong>，退休後更有實質股票張數帶來的穩定股息，終身現金流不枯竭！
     `;
 
     updateLineChart(annualLabels, annualStock, annualSavings, annualTotalNet, annualNoInvestNet);
@@ -1717,7 +1741,7 @@
         labels: labels,
         datasets: [
           {
-            label: '投資組：總身家淨值 (股票+存款)',
+            label: '投資組：總身家淨值 (股票市值+存款)',
             data: netWorthData,
             borderColor: '#10b981',
             backgroundColor: 'rgba(16, 185, 129, 0.08)',
@@ -1738,7 +1762,7 @@
             pointRadius: 2
           },
           {
-            label: '投資組：股票市值',
+            label: '投資組：股票總市值 (隨市場成長)',
             data: stockData,
             borderColor: '#8b5cf6',
             borderWidth: 2,
