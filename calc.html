@@ -1,0 +1,1759 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>人生生存試算器 60年長期財務模型 (社群公開版)</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    :root {
+      --primary: #10b981;
+      --primary-dark: #059669;
+      --secondary: #3b82f6;
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --text: #1e293b;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+      --danger: #ef4444;
+      --accent: #f59e0b;
+      --purple: #8b5cf6;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      padding: 24px 16px;
+    }
+
+    .container {
+      max-width: 1440px;
+      margin: 0 auto;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+
+    header h1 {
+      font-size: 1.85rem;
+      color: var(--text);
+      font-weight: 800;
+      margin-bottom: 6px;
+    }
+
+    header p {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 24px;
+    }
+
+    @media (min-width: 1120px) {
+      .grid {
+        grid-template-columns: 560px 1fr;
+      }
+    }
+
+    .card {
+      background: var(--card-bg);
+      border-radius: 16px;
+      padding: 22px;
+      border: 1px solid var(--border);
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.04);
+      margin-bottom: 24px;
+    }
+
+    .card-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 2px solid var(--border);
+      padding-bottom: 8px;
+    }
+
+    .section-subtitle {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--secondary);
+      margin: 14px 0 8px 0;
+      padding-left: 6px;
+      border-left: 3px solid var(--secondary);
+    }
+
+    .form-group {
+      margin-bottom: 10px;
+    }
+
+    label {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 600;
+      margin-bottom: 4px;
+      color: var(--text);
+    }
+
+    input, select {
+      width: 100%;
+      padding: 7px 9px;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      font-size: 0.88rem;
+      outline: none;
+      transition: border-color 0.2s;
+      background: #ffffff;
+    }
+
+    input:focus, select:focus {
+      border-color: var(--primary);
+    }
+
+    .input-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .input-row-3 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 8px;
+    }
+
+    .input-row-4 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr 1fr;
+      gap: 6px;
+    }
+
+    .stage-box {
+      background: #f8fafc;
+      border: 1px dashed var(--border);
+      border-radius: 10px;
+      padding: 10px;
+      margin-bottom: 8px;
+    }
+
+    .child-box {
+      background: #fefce8;
+      border: 1.5px dashed var(--accent);
+      border-radius: 10px;
+      padding: 12px;
+      margin-bottom: 12px;
+    }
+
+    .housing-box {
+      background: #eff6ff;
+      border: 1.5px dashed var(--secondary);
+      border-radius: 10px;
+      padding: 12px;
+      margin-bottom: 12px;
+    }
+
+    .spouse-box {
+      background: #fdf4ff;
+      border: 1.5px dashed var(--purple);
+      border-radius: 10px;
+      padding: 12px;
+      margin-bottom: 12px;
+    }
+
+    .stage-label {
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+
+    .tip-box {
+      background: #ffffff;
+      border-left: 4px solid var(--secondary);
+      padding: 10px 12px;
+      font-size: 0.82rem;
+      color: #1e40af;
+      margin-top: 8px;
+      border-radius: 4px;
+      line-height: 1.5;
+    }
+
+    .tip-box.warning {
+      border-left-color: var(--danger);
+      color: #991b1b;
+      background: #fef2f2;
+    }
+
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    @media (min-width: 600px) {
+      .kpi-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    .kpi-card {
+      background: #f1f5f9;
+      padding: 16px;
+      border-radius: 12px;
+      border-left: 5px solid var(--primary);
+    }
+
+    .kpi-card.warning {
+      border-left-color: var(--danger);
+    }
+
+    .kpi-title {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .kpi-value {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--text);
+    }
+
+    .kpi-desc {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      margin-top: 4px;
+      line-height: 1.4;
+    }
+
+    .table-container {
+      overflow-x: auto;
+      margin-bottom: 20px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.8rem;
+      text-align: right;
+    }
+
+    th, td {
+      padding: 8px 8px;
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+    }
+
+    th {
+      background: #f8fafc;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    th:first-child, td:first-child {
+      text-align: left;
+    }
+
+    .sub-row td {
+      color: #64748b;
+      font-size: 0.76rem;
+      background: #fafafa;
+    }
+
+    .chart-container {
+      position: relative;
+      height: 330px;
+      width: 100%;
+    }
+
+    footer {
+      text-align: center;
+      padding: 24px 0 16px;
+      color: var(--text-muted);
+      font-size: 0.82rem;
+      line-height: 1.6;
+      border-top: 1px solid var(--border);
+      margin-top: 24px;
+    }
+
+    .checkbox-inline {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      cursor: pointer;
+    }
+
+    .checkbox-inline input {
+      width: auto;
+      margin: 0;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <header>
+    <h1>人生生存試算器 (60年長期財務模型)</h1>
+    <p>自選起算與退休年齡、房貸月收入負擔比精算、新青安分段利率、投資 vs 不投資雙軌對照</p>
+  </header>
+
+  <div class="grid">
+    <!-- 左側面板 -->
+    <div class="card">
+      <div class="card-title">
+        <span>⚙️ 核心人生階段設定</span>
+      </div>
+
+      <div class="input-row">
+        <div class="form-group">
+          <label>工作起算年齡</label>
+          <select id="startAge" onchange="updateStageVisibility()">
+            <option value="25">25 歲開始規劃</option>
+            <option value="30" selected>30 歲開始規劃</option>
+            <option value="35">35 歲開始規劃</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>預計退休年齡</label>
+          <select id="retireAge" onchange="updateStageVisibility()">
+            <option value="65" selected>65 歲退休</option>
+            <option value="70">70 歲退休</option>
+            <option value="75">75 歲退休 (延後領年金)</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="section-subtitle">💵 收入與薪資模式</div>
+      <div class="input-row">
+        <div class="form-group">
+          <label>薪水模式</label>
+          <select id="salaryMode" onchange="handleSalaryModeChange()">
+            <option value="single">單薪模式 (預設 35,000)</option>
+            <option value="double" selected>雙薪模式 (預設 合計 90,000)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>主要填表方性別 (影響產假判定)</label>
+          <select id="userGender" onchange="calculate()">
+            <option value="male" selected>我是男生 (另一半為女生)</option>
+            <option value="female">我是女生 (自己產假/育嬰)</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label id="lbl_baseSalarySelf">我的起始月薪 (NT$)</label>
+        <input type="number" id="baseSalarySelf" value="45000" step="1000" oninput="calculate()">
+      </div>
+
+      <!-- 另一半專區 -->
+      <div id="spouseSalaryBox" class="spouse-box">
+        <div class="input-row">
+          <div class="form-group">
+            <label>另一半起始月薪 (NT$)</label>
+            <input type="number" id="baseSalarySpouse" value="45000" step="1000" oninput="calculate()">
+          </div>
+          <div class="form-group">
+            <label>預計幾歲結婚合併雙薪？</label>
+            <select id="marryAge" onchange="calculate()">
+              <option value="25">25 歲結婚</option>
+              <option value="28">28 歲結婚</option>
+              <option value="30">30 歲結婚</option>
+              <option value="32">32 歲結婚</option>
+              <option value="35" selected>35 歲結婚</option>
+              <option value="38">38 歲結婚</option>
+              <option value="40">40 歲結婚</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="stage-label" style="margin-top: 6px; color:#a21caf;">🎁 另一半結婚當下各項獎金 (結婚後年漲2%複利)</div>
+        <div class="input-row-3">
+          <div class="form-group">
+            <label>每月常態獎金</label>
+            <input type="number" id="mBonus_Spouse" value="0" step="1000" oninput="calculate()">
+          </div>
+          <div class="form-group">
+            <label>年終獎金(手動)</label>
+            <input type="number" id="yBonus_Spouse" value="45000" step="1000" oninput="calculate()">
+          </div>
+          <div class="form-group">
+            <label>三節獎金(年)</label>
+            <input type="number" id="fBonus_Spouse" value="3000" step="1000" oninput="calculate()">
+          </div>
+        </div>
+      </div>
+
+      <div class="section-subtitle">🎁 各階段個人獎金 (本薪年漲2%複利)</div>
+      
+      <!-- 25~29 歲獎金 -->
+      <div class="stage-box" id="box_stage_25" style="display:none;">
+        <div class="stage-label">📍 第 0 階段：25～29 歲獎金 (5年)</div>
+        <div class="input-row-3">
+          <div class="form-group">
+            <label>每月常態獎金</label>
+            <input type="number" id="mBonus_25" value="0" step="1000" oninput="calculate()">
+          </div>
+          <div class="form-group">
+            <label>年終獎金(手動)</label>
+            <input type="number" id="yBonus_25" value="35000" step="1000" oninput="calculate()">
+          </div>
+          <div class="form-group">
+            <label>三節獎金(年)</label>
+            <input type="number" id="fBonus_25" value="3000" step="1000" oninput="calculate()">
+          </div>
+        </div>
+      </div>
+
+      <!-- 30~34 歲獎金 -->
+      <div class="stage-box" id="box_stage_30">
+        <div class="stage-label">📍 第 0.5 階段：30～34 歲獎金 (5年衝刺階)</div>
+        <div class="input-row-3">
+          <div class="form-group">
+            <label>每月常態獎金</label>
+            <input type="number" id="mBonus_30" value="0" step="1000" oninput="calculate()">
+          </div>
+          <div class="form-group">
+            <label>年終獎金(手動)</label>
+            <input type="number" id="yBonus_30" value="45000" step="1000" oninput="calculate()">
+          </div>
+          <div class="form-group">
+            <label>三節獎金(年)</label>
+            <input type="number" id="fBonus_30" value="3000" step="1000" oninput="calculate()">
+          </div>
+        </div>
+      </div>
+
+      <!-- 35~44 歲獎金 -->
+      <div class="stage-box" id="box_stage_35">
+        <div class="stage-label">📍 第 1 階段：35～44 歲獎金 (10年)</div>
+        <div class="input-row-3">
+          <div class="form-group">
+            <label>每月常態獎金</label>
+            <input type="number" id="mBonus_35" value="0" step="1000" oninput="calculate()">
+          </div>
+          <div class="form-group">
+            <label>年終獎金(手動)</label>
+            <input type="number" id="yBonus_35" value="45000" step="1000" oninput="calculate()">
+          </div>
+          <div class="form-group">
+            <label>三節獎金(年)</label>
+            <input type="number" id="fBonus_35" value="3000" step="1000" oninput="calculate()">
+          </div>
+        </div>
+      </div>
+
+      <!-- 45~54 歲獎金 -->
+      <div class="stage-box" id="box_stage_45">
+        <div class="stage-label">📍 第 2 階段：45～54 歲獎金 (10年)</div>
+        <div class="input-row-3">
+          <div class="form-group">
+            <label>每月常態獎金</label>
+            <input type="number" id="mBonus_45" value="0" step="1000" oninput="calculate()">
+          </div>
+          <div class="form-group">
+            <label id="lbl_yBonus_45">年終月數</label>
+            <select id="yBonusMonth_45" onchange="calculate()">
+              <option value="0.5">0.5 個月</option>
+              <option value="1" selected>1 個月</option>
+              <option value="2">2 個月</option>
+              <option value="3">3 個月</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>三節獎金(年)</label>
+            <input type="number" id="fBonus_45" value="5000" step="1000" oninput="calculate()">
+          </div>
+        </div>
+      </div>
+
+      <!-- 55~64 歲獎金 -->
+      <div class="stage-box" id="box_stage_55">
+        <div class="stage-label">📍 第 3 階段：55～64 歲獎金 (10年)</div>
+        <div class="input-row-3">
+          <div class="form-group">
+            <label>每月常態獎金</label>
+            <input type="number" id="mBonus_55" value="0" step="1000" oninput="calculate()">
+          </div>
+          <div class="form-group">
+            <label id="lbl_yBonus_55">年終月數</label>
+            <select id="yBonusMonth_55" onchange="calculate()">
+              <option value="0.5">0.5 個月</option>
+              <option value="1" selected>1 個月</option>
+              <option value="2">2 個月</option>
+              <option value="3">3 個月</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>三節獎金(年)</label>
+            <input type="number" id="fBonus_55" value="8000" step="1000" oninput="calculate()">
+          </div>
+        </div>
+      </div>
+
+      <!-- 65~74 歲獎金 -->
+      <div class="stage-box" id="box_stage_65" style="display:none;">
+        <div class="stage-label">📍 第 4 階段：65～74 歲獎金 (延退工作期)</div>
+        <div class="input-row-3">
+          <div class="form-group">
+            <label>每月常態獎金</label>
+            <input type="number" id="mBonus_65" value="0" step="1000" oninput="calculate()">
+          </div>
+          <div class="form-group">
+            <label id="lbl_yBonus_65">年終月數</label>
+            <select id="yBonusMonth_65" onchange="calculate()">
+              <option value="0">0 個月</option>
+              <option value="1" selected>1 個月</option>
+              <option value="2">2 個月</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>三節獎金(年)</label>
+            <input type="number" id="fBonus_65" value="3000" step="1000" oninput="calculate()">
+          </div>
+        </div>
+      </div>
+
+      <!-- 居住規劃專區 (含房貸月收入比設定與警示) -->
+      <div class="section-subtitle">🏠 居住模式與購屋規劃</div>
+      <div class="housing-box">
+        <div class="form-group">
+          <label>人生居住策略</label>
+          <select id="housingStrategy" onchange="handleHousingStrategyChange()">
+            <option value="rent">全程租屋 (不買房)</option>
+            <option value="buy" selected>規劃買房置產</option>
+          </select>
+        </div>
+
+        <div id="buyDetailsContainer">
+          <div class="input-row">
+            <div class="form-group">
+              <label>預計幾歲買房？</label>
+              <select id="buyAge" onchange="calculate()">
+                <option value="25">25 歲買房</option>
+                <option value="28">28 歲買房</option>
+                <option value="30">30 歲買房</option>
+                <option value="35">35 歲買房</option>
+                <option value="38" selected>38 歲買房</option>
+                <option value="40">40 歲買房</option>
+                <option value="45">45 歲買房</option>
+                <option value="50">50 歲買房</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>房貸貸款總年限</label>
+              <select id="mortgageTotalYears" onchange="calculate()">
+                <option value="20">20 年期</option>
+                <option value="30">30 年期</option>
+                <option value="40" selected>40 年期 (新青安推薦)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="input-row-3">
+            <div class="form-group">
+              <label>房屋總價 (萬元)</label>
+              <input type="number" id="housePriceWan" value="1200" step="50" oninput="calculate()">
+            </div>
+            <div class="form-group">
+              <label>貸款成數 (%)</label>
+              <input type="number" id="loanRatio" value="80" step="5" oninput="calculate()">
+            </div>
+            <div class="form-group">
+              <label>房貸收入上限 (%)</label>
+              <input type="number" id="targetDsr" value="35" min="20" max="60" step="5" oninput="calculate()">
+            </div>
+          </div>
+
+          <!-- 房貸方案與分段利率/寬限期設定 -->
+          <div class="stage-box" style="background:#ffffff; border:1px solid #bfdbfe; margin-top:6px;">
+            <div class="stage-label" style="color:var(--secondary);">🏦 房貸方案、分段利率與寬限期設定</div>
+            
+            <div class="form-group">
+              <label>適用房貸方案</label>
+              <select id="mortgagePlanType" onchange="handleMortgagePlanChange()">
+                <option value="qing_an" selected>符合新青安方案 (享前5年優惠利率，最高5年寬限期)</option>
+                <option value="regular">一般首購 / 商業房貸 (單一自談利率，最高3年寬限期)</option>
+              </select>
+            </div>
+
+            <!-- 新青安利率輸入框 -->
+            <div id="rowQingAnRate" class="input-row">
+              <div class="form-group">
+                <label>前5年新青安優惠利率 (%)</label>
+                <input type="number" id="mortgageRateQingAn" value="1.775" step="0.025" oninput="calculate()">
+              </div>
+              <div class="form-group">
+                <label>第6年起自談利率 (%)</label>
+                <input type="number" id="mortgageRatePostQingAn" value="2.15" step="0.05" oninput="calculate()">
+              </div>
+            </div>
+
+            <!-- 一般貸款利率輸入框 -->
+            <div id="rowRegularRate" class="form-group" style="display:none;">
+              <label>自談房貸年利率 (%)</label>
+              <input type="number" id="mortgageRateRegular" value="2.2" step="0.05" oninput="calculate()">
+            </div>
+
+            <div class="form-group">
+              <label>寬限期選擇</label>
+              <select id="gracePeriod" onchange="calculate()">
+                <!-- 動態切換 -->
+              </select>
+            </div>
+          </div>
+
+          <div class="input-row" style="margin-top:6px;">
+            <div class="form-group">
+              <label>父母贊助款 (買房專屬 NT$)</label>
+              <input type="number" id="parentsHelp" value="0" step="50000" oninput="calculate()">
+            </div>
+            <div class="form-group">
+              <label>購屋後每月大樓管理費 (NT$)</label>
+              <input type="number" id="buyMaint" value="2000" step="200" oninput="calculate()">
+            </div>
+          </div>
+        </div>
+
+        <div class="tip-box" id="downPaymentTip">
+          分析計算中...
+        </div>
+      </div>
+
+      <div class="form-group" id="rentRow">
+        <label id="lbl_baseRent">未買房前每月租金 (買房後自動歸零 NT$)</label>
+        <input type="number" id="baseRent" value="12000" step="500" oninput="calculate()">
+      </div>
+
+      <!-- 細項日常生活開銷 -->
+      <div class="section-subtitle">🛒 每月細項基礎生活開銷 (年通膨3%)</div>
+      <div class="input-row">
+        <div class="form-group">
+          <label>伙食費 (NT$)</label>
+          <input type="number" id="expFood" value="18000" step="500" oninput="calculate()">
+        </div>
+        <div class="form-group">
+          <label>休閒娛樂 (NT$)</label>
+          <input type="number" id="expFun" value="5000" step="500" oninput="calculate()">
+        </div>
+      </div>
+
+      <div class="input-row">
+        <div class="form-group">
+          <label>保健與醫療支出 (NT$)</label>
+          <input type="number" id="expHealth" value="3000" step="500" oninput="calculate()">
+        </div>
+        <div class="form-group">
+          <label>通訊手機費 (NT$)</label>
+          <input type="number" id="expPhone" value="1200" step="100" oninput="calculate()">
+        </div>
+      </div>
+
+      <div class="input-row-3">
+        <div class="form-group">
+          <label>水費 (月均)</label>
+          <input type="number" id="expWater" value="300" step="50" oninput="calculate()">
+        </div>
+        <div class="form-group">
+          <label>電費 (月均)</label>
+          <input type="number" id="expPower" value="1500" step="100" oninput="calculate()">
+        </div>
+        <div class="form-group">
+          <label>家用網路費</label>
+          <input type="number" id="expNet" value="800" step="50" oninput="calculate()">
+        </div>
+      </div>
+
+      <div class="input-row">
+        <div class="form-group">
+          <label>個人/家庭定期商業保險 (月均 NT$)</label>
+          <input type="number" id="expInsurance" value="4000" step="500" oninput="calculate()">
+        </div>
+        <div class="form-group">
+          <label>日常生活雜支 (月均 NT$)</label>
+          <input type="number" id="expMisc" value="2500" step="500" oninput="calculate()">
+        </div>
+      </div>
+
+      <!-- 五階段育兒支出模型 -->
+      <div class="section-subtitle">👶 小孩生養與五大教育階段支出</div>
+      <div class="child-box">
+        <div class="input-row">
+          <div class="form-group">
+            <label>規劃幾歲生小孩？</label>
+            <select id="childBornAge" onchange="handleChildToggle()">
+              <option value="0">無生育規劃 (0元)</option>
+              <option value="26">26 歲生小孩</option>
+              <option value="28">28 歲生小孩</option>
+              <option value="30">30 歲生小孩</option>
+              <option value="32" selected>32 歲生小孩</option>
+              <option value="35">35 歲生小孩</option>
+              <option value="38">38 歲生小孩</option>
+            </select>
+          </div>
+          <div class="form-group" id="maternityLeaveRow">
+            <label>0～2歲女性產假/育嬰留停薪資</label>
+            <select id="maternityPayType" onchange="calculate()">
+              <option value="1">正常上班 (100%全薪)</option>
+              <option value="0.5" selected>產假/育嬰津貼 (半薪 50%)</option>
+              <option value="0">全職育嬰留停 (無薪 0%)</option>
+            </select>
+          </div>
+        </div>
+
+        <div id="childStagesContainer">
+          <div class="stage-box">
+            <div class="stage-label">🍼 階段一：0～3 歲嬰幼兒期 (每月支出)</div>
+            <div class="input-row-4">
+              <div class="form-group">
+                <label>奶粉伙食</label>
+                <input type="number" id="c0_milk" value="4000" step="500" oninput="calculate()">
+              </div>
+              <div class="form-group">
+                <label>尿布耗材</label>
+                <input type="number" id="c0_diaper" value="2000" step="200" oninput="calculate()">
+              </div>
+              <div class="form-group">
+                <label>托育保母</label>
+                <input type="number" id="c0_care" value="15000" step="1000" oninput="calculate()">
+              </div>
+              <div class="form-group">
+                <label>幼兒保險</label>
+                <input type="number" id="c0_ins" value="2500" step="500" oninput="calculate()">
+              </div>
+            </div>
+          </div>
+
+          <div class="stage-box">
+            <div class="stage-label">🎨 階段二：3～6 歲幼兒園期 (每月支出)</div>
+            <div class="input-row-3">
+              <div class="form-group">
+                <label>幼兒園學費</label>
+                <input type="number" id="c3_school" value="8000" step="1000" oninput="calculate()">
+              </div>
+              <div class="form-group">
+                <label>早期啟蒙才藝</label>
+                <input type="number" id="c3_talent" value="3000" step="500" oninput="calculate()">
+              </div>
+              <div class="form-group">
+                <label>飲食衣物日常</label>
+                <input type="number" id="c3_daily" value="4000" step="500" oninput="calculate()">
+              </div>
+            </div>
+          </div>
+
+          <div class="stage-box">
+            <div class="stage-label">🎒 階段三：6～12 歲國小期 (每月支出)</div>
+            <div class="input-row-4">
+              <div class="form-group">
+                <label>學校雜費</label>
+                <input type="number" id="c6_school" value="2000" step="500" oninput="calculate()">
+              </div>
+              <div class="form-group">
+                <label>課後安親班</label>
+                <input type="number" id="c6_care" value="7000" step="500" oninput="calculate()">
+              </div>
+              <div class="form-group">
+                <label>才藝補習</label>
+                <input type="number" id="c6_talent" value="3000" step="500" oninput="calculate()">
+              </div>
+              <div class="form-group">
+                <label>零用錢</label>
+                <input type="number" id="c6_pocket" value="800" step="200" oninput="calculate()">
+              </div>
+            </div>
+          </div>
+
+          <div class="stage-box">
+            <div class="stage-label">📚 階段四：12～18 歲國高中期 (每月支出)</div>
+            <div class="input-row-3">
+              <div class="form-group">
+                <label>學費雜支</label>
+                <input type="number" id="c12_school" value="3000" step="500" oninput="calculate()">
+              </div>
+              <div class="form-group">
+                <label>升學補習班</label>
+                <input type="number" id="c12_cram" value="10000" step="1000" oninput="calculate()">
+              </div>
+              <div class="form-group">
+                <label>零用錢</label>
+                <input type="number" id="c12_pocket" value="2500" step="500" oninput="calculate()">
+              </div>
+            </div>
+          </div>
+
+          <div class="stage-box">
+            <div class="stage-label">🎓 階段五：18～22 歲大學期 (每月支出)</div>
+            <div class="input-row-3">
+              <div class="form-group">
+                <label>學雜費(每月攤提)</label>
+                <input type="number" id="c18_tuition" value="5000" step="500" oninput="calculate()">
+              </div>
+              <div class="form-group">
+                <label>宿舍/外宿租金</label>
+                <input type="number" id="c18_rent" value="6000" step="500" oninput="calculate()">
+              </div>
+              <div class="form-group">
+                <label>生活伙食津貼</label>
+                <input type="number" id="c18_allowance" value="9000" step="1000" oninput="calculate()">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 投資提撥 (分階段設定) -->
+      <div class="section-subtitle">📈 投資提撥 (自訂各階每月投入)</div>
+      <div id="investStagesContainer">
+        <!-- 25~29歲 -->
+        <div class="stage-box" id="box_inv_25" style="display:none;">
+          <div class="stage-label">📍 第 0 階段：25～29 歲 (每月投入)</div>
+          <div class="input-row">
+            <div class="form-group">
+              <label>市值型 ETF (NT$)</label>
+              <input type="number" id="inv50_25" value="10000" step="1000" oninput="calculate()">
+            </div>
+            <div class="form-group">
+              <label>高股息 ETF (NT$)</label>
+              <input type="number" id="inv19_25" value="0" step="1000" oninput="calculate()">
+            </div>
+          </div>
+        </div>
+
+        <!-- 30~34歲 -->
+        <div class="stage-box" id="box_inv_30">
+          <div class="stage-label">📍 第 0.5 階段：30～34 歲 (5年衝刺每月投入)</div>
+          <div class="input-row">
+            <div class="form-group">
+              <label>市值型 ETF (NT$)</label>
+              <input type="number" id="inv50_30" value="20000" step="1000" oninput="calculate()">
+            </div>
+            <div class="form-group">
+              <label>高股息 ETF (NT$)</label>
+              <input type="number" id="inv19_30" value="0" step="1000" oninput="calculate()">
+            </div>
+          </div>
+        </div>
+
+        <!-- 35~44歲 -->
+        <div class="stage-box" id="box_inv_35">
+          <div class="stage-label">📍 第 1 階段：35～44 歲 (每月投入)</div>
+          <div class="input-row">
+            <div class="form-group">
+              <label>市值型 ETF (NT$)</label>
+              <input type="number" id="inv50_35" value="20000" step="1000" oninput="calculate()">
+            </div>
+            <div class="form-group">
+              <label>高股息 ETF (NT$)</label>
+              <input type="number" id="inv19_35" value="0" step="1000" oninput="calculate()">
+            </div>
+          </div>
+        </div>
+
+        <!-- 45~54歲 -->
+        <div class="stage-box" id="box_inv_45">
+          <div class="stage-label">📍 第 2 階段：45～54 歲 (每月投入)</div>
+          <div class="input-row">
+            <div class="form-group">
+              <label>市值型 ETF (NT$)</label>
+              <input type="number" id="inv50_45" value="25000" step="1000" oninput="calculate()">
+            </div>
+            <div class="form-group">
+              <label>高股息 ETF (NT$)</label>
+              <input type="number" id="inv19_45" value="0" step="1000" oninput="calculate()">
+            </div>
+          </div>
+        </div>
+
+        <!-- 55~64歲 -->
+        <div class="stage-box" id="box_inv_55">
+          <div class="stage-label">📍 第 3 階段：55～64 歲 (每月投入)</div>
+          <div class="input-row">
+            <div class="form-group">
+              <label>市值型 ETF (NT$)</label>
+              <input type="number" id="inv50_55" value="10000" step="1000" oninput="calculate()">
+            </div>
+            <div class="form-group">
+              <label>高股息 ETF (NT$)</label>
+              <input type="number" id="inv19_55" value="15000" step="1000" oninput="calculate()">
+            </div>
+          </div>
+        </div>
+
+        <!-- 65~74歲 -->
+        <div class="stage-box" id="box_inv_65" style="display:none;">
+          <div class="stage-label">📍 第 4 階段：65～74 歲 (每月投入)</div>
+          <div class="input-row">
+            <div class="form-group">
+              <label>市值型 ETF (NT$)</label>
+              <input type="number" id="inv50_65" value="0" step="1000" oninput="calculate()">
+            </div>
+            <div class="form-group">
+              <label>高股息 ETF (NT$)</label>
+              <input type="number" id="inv19_65" value="0" step="1000" oninput="calculate()">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group" style="margin-top: 10px;">
+        <label>累積期配息策略</label>
+        <select id="dividendPolicy" onchange="calculate()">
+          <option value="all_reinvest" selected>全期再投入 (退休後才開始提領)</option>
+          <option value="from_0">全期領出 (第 0 年起領出)</option>
+          <option value="from_10">第 10 年起提領</option>
+          <option value="from_20">第 20 年起提領</option>
+          <option value="from_30">第 30 年起提領</option>
+          <option value="from_40">退休前第 10 年提領 (55歲開始)</option>
+        </select>
+      </div>
+
+      <div class="input-row">
+        <div class="form-group">
+          <label>起始股票資產 (NT$)</label>
+          <input type="number" id="initStock" value="0" step="10000" oninput="calculate()">
+        </div>
+        <div class="form-group">
+          <label>起算年齡活存存款 (NT$)</label>
+          <input type="number" id="initSavings" value="200000" step="10000" oninput="calculate()">
+        </div>
+      </div>
+
+      <div class="section-subtitle" style="display:flex; justify-content:space-between; align-items:center;">
+        <span>🛡️ 退休勞保+勞退年金</span>
+        <label class="checkbox-inline">
+          <input type="checkbox" id="autoPension" checked onchange="togglePensionAuto()"> 自動推算
+        </label>
+      </div>
+      <div class="form-group">
+        <label id="pensionHint">退休後每月領取金額 (NT$)</label>
+        <input type="number" id="pension" value="38500" step="1000" oninput="calculate()">
+      </div>
+    </div>
+
+    <!-- 右側輸出看板 -->
+    <div>
+      <div class="card">
+        <div class="card-title">📊 60年人生財務推算結果</div>
+
+        <div class="kpi-grid">
+          <div class="kpi-card" id="retireCard">
+            <div class="kpi-title">退休首年每月結餘 (含配息)</div>
+            <div class="kpi-value" id="kpiSurplus">+ NT$ 12,400</div>
+            <div class="kpi-desc" id="kpiDesc">計算中...</div>
+          </div>
+          <div class="kpi-card" id="netWorthCard">
+            <div class="kpi-title">最終資產淨值 (85歲時身家)</div>
+            <div class="kpi-value" id="kpiNetWorth">5,820 萬</div>
+            <div class="kpi-desc" id="kpiStockRatio">計算中...</div>
+          </div>
+        </div>
+
+        <div class="card-title">📈 60年關鍵十年節點明細表 (收入結構拆分)</div>
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr id="tableHeaderRow">
+                <th>項目</th>
+              </tr>
+            </thead>
+            <tbody id="resultTableBody"></tbody>
+          </table>
+        </div>
+
+        <div class="card-title">📉 60年總資產走勢曲線 (投資 vs 不投資)</div>
+        <div class="chart-container">
+          <canvas id="assetChart"></canvas>
+        </div>
+      </div>
+
+      <!-- 投資 vs 不投資 比較明細卡片 -->
+      <div class="card">
+        <div class="card-title">⚖️ 「投資 ETF」與「不投資 (純放定存活存)」效益比較表</div>
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr id="compareHeaderRow">
+                <th>情境方案</th>
+              </tr>
+            </thead>
+            <tbody id="compareTableBody"></tbody>
+          </table>
+        </div>
+        <div class="tip-box" id="compareSummaryTip" style="border-left-color: var(--accent); color: #92400e; background: #fffbeb;">
+          分析生成中...
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <p>© 2026 理財生存試算器 All Rights Reserved. 僅供個人理財規劃試算參考，非商業投資建議。</p>
+  </footer>
+</div>
+
+<script>
+  let chartInstance = null;
+
+  function computePMT(rateAnnual, years, loanAmount) {
+    if (rateAnnual === 0 || years === 0) return Math.round(loanAmount / (years * 12 || 1));
+    const r = (rateAnnual / 100) / 12;
+    const n = years * 12;
+    const pmt = loanAmount * (r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1);
+    return Math.round(pmt);
+  }
+
+  function formatMoney(num) {
+    return Math.round(num).toLocaleString('en-US');
+  }
+
+  function handleSalaryModeChange() {
+    const isDouble = (document.getElementById('salaryMode').value === 'double');
+    document.getElementById('spouseSalaryBox').style.display = isDouble ? 'block' : 'none';
+    const selfInput = document.getElementById('baseSalarySelf');
+    const lblSelf = document.getElementById('lbl_baseSalarySelf');
+
+    if (isDouble) {
+      lblSelf.textContent = '我的起始月薪 (NT$)';
+      if (parseFloat(selfInput.value) <= 38000) selfInput.value = 45000;
+    } else {
+      lblSelf.textContent = '起算年齡月薪總額 (NT$)';
+      selfInput.value = 35000;
+    }
+    calculate();
+  }
+
+  function updateStageVisibility() {
+    const startAge = parseInt(document.getElementById('startAge').value, 10);
+    const retireAge = parseInt(document.getElementById('retireAge').value, 10);
+
+    document.getElementById('box_stage_25').style.display = (startAge === 25) ? 'block' : 'none';
+    document.getElementById('box_inv_25').style.display = (startAge === 25) ? 'block' : 'none';
+
+    document.getElementById('box_stage_30').style.display = (startAge <= 30) ? 'block' : 'none';
+    document.getElementById('box_inv_30').style.display = (startAge <= 30) ? 'block' : 'none';
+
+    document.getElementById('box_stage_65').style.display = (retireAge > 65) ? 'block' : 'none';
+    document.getElementById('box_inv_65').style.display = (retireAge > 65) ? 'block' : 'none';
+
+    calculate();
+  }
+
+  function handleHousingStrategyChange() {
+    const strategy = document.getElementById('housingStrategy').value;
+    const buyDetails = document.getElementById('buyDetailsContainer');
+    const lblRent = document.getElementById('lbl_baseRent');
+
+    if (strategy === 'rent') {
+      buyDetails.style.display = 'none';
+      lblRent.textContent = '每月租金支出 (全程租屋 NT$)';
+    } else {
+      buyDetails.style.display = 'block';
+      lblRent.textContent = '未買房前每月租金 (買房後自動歸零 NT$)';
+    }
+    calculate();
+  }
+
+  function handleMortgagePlanChange() {
+    const planType = document.getElementById('mortgagePlanType').value;
+    const rowQingAn = document.getElementById('rowQingAnRate');
+    const rowRegular = document.getElementById('rowRegularRate');
+    const graceSelect = document.getElementById('gracePeriod');
+
+    if (planType === 'qing_an') {
+      rowQingAn.style.display = 'grid';
+      rowRegular.style.display = 'none';
+      graceSelect.innerHTML = `
+        <option value="0">無寬限期 (本息均攤)</option>
+        <option value="1">1 年寬限期 (只繳息)</option>
+        <option value="3">3 年寬限期 (只繳息)</option>
+        <option value="5" selected>5 年寬限期 (新青安上限)</option>
+      `;
+    } else {
+      rowQingAn.style.display = 'none';
+      rowRegular.style.display = 'block';
+      graceSelect.innerHTML = `
+        <option value="0">無寬限期 (本息均攤)</option>
+        <option value="1">1 年寬限期 (只繳息)</option>
+        <option value="3" selected>3 年寬限期 (一般銀行上限)</option>
+      `;
+    }
+    calculate();
+  }
+
+  function handleChildToggle() {
+    const childAge = parseInt(document.getElementById('childBornAge').value, 10);
+    const details = document.getElementById('childStagesContainer');
+    const matRow = document.getElementById('maternityLeaveRow');
+    details.style.display = (childAge === 0) ? 'none' : 'block';
+    matRow.style.display = (childAge === 0) ? 'none' : 'block';
+    calculate();
+  }
+
+  function togglePensionAuto() {
+    const isAuto = document.getElementById('autoPension').checked;
+    const pInput = document.getElementById('pension');
+    pInput.readOnly = isAuto;
+    pInput.style.backgroundColor = isAuto ? '#f1f5f9' : '#ffffff';
+    calculate();
+  }
+
+  function getChildMonthlyExpense(parentAge, childBornAge) {
+    if (childBornAge === 0 || parentAge < childBornAge) return 0;
+    const childAge = parentAge - childBornAge;
+
+    if (childAge < 3) {
+      return (parseFloat(document.getElementById('c0_milk').value) || 0) +
+             (parseFloat(document.getElementById('c0_diaper').value) || 0) +
+             (parseFloat(document.getElementById('c0_care').value) || 0) +
+             (parseFloat(document.getElementById('c0_ins').value) || 0);
+    } else if (childAge < 6) {
+      return (parseFloat(document.getElementById('c3_school').value) || 0) +
+             (parseFloat(document.getElementById('c3_talent').value) || 0) +
+             (parseFloat(document.getElementById('c3_daily').value) || 0);
+    } else if (childAge < 12) {
+      return (parseFloat(document.getElementById('c6_school').value) || 0) +
+             (parseFloat(document.getElementById('c6_care').value) || 0) +
+             (parseFloat(document.getElementById('c6_talent').value) || 0) +
+             (parseFloat(document.getElementById('c6_pocket').value) || 0);
+    } else if (childAge < 18) {
+      return (parseFloat(document.getElementById('c12_school').value) || 0) +
+             (parseFloat(document.getElementById('c12_cram').value) || 0) +
+             (parseFloat(document.getElementById('c12_pocket').value) || 0);
+    } else if (childAge < 22) {
+      return (parseFloat(document.getElementById('c18_tuition').value) || 0) +
+             (parseFloat(document.getElementById('c18_rent').value) || 0) +
+             (parseFloat(document.getElementById('c18_allowance').value) || 0);
+    }
+    return 0;
+  }
+
+  function calculate() {
+    const startAge = parseInt(document.getElementById('startAge').value, 10);
+    const retireAge = parseInt(document.getElementById('retireAge').value, 10);
+    const isDoubleMode = (document.getElementById('salaryMode').value === 'double');
+    const userGender = document.getElementById('userGender').value;
+
+    const baseSalarySelf = parseFloat(document.getElementById('baseSalarySelf').value) || 0;
+    const baseSalarySpouse = isDoubleMode ? (parseFloat(document.getElementById('baseSalarySpouse').value) || 0) : 0;
+    const marryAge = isDoubleMode ? parseInt(document.getElementById('marryAge').value, 10) : 999;
+
+    const mBonusSpouseBase = isDoubleMode ? (parseFloat(document.getElementById('mBonus_Spouse').value) || 0) : 0;
+    const yBonusSpouseBase = isDoubleMode ? (parseFloat(document.getElementById('yBonus_Spouse').value) || 0) : 0;
+    const fBonusSpouseBase = isDoubleMode ? (parseFloat(document.getElementById('fBonus_Spouse').value) || 0) : 0;
+
+    const isBuyStrategy = (document.getElementById('housingStrategy').value === 'buy');
+    const buyAge = isBuyStrategy ? parseInt(document.getElementById('buyAge').value, 10) : 0;
+
+    const housePriceWan = parseFloat(document.getElementById('housePriceWan').value) || 0;
+    const housePrice = housePriceWan * 10000;
+    const loanRatio = (parseFloat(document.getElementById('loanRatio').value) || 80) / 100;
+    const mortgageYears = parseInt(document.getElementById('mortgageTotalYears').value, 10);
+    const parentsHelp = isBuyStrategy ? (parseFloat(document.getElementById('parentsHelp').value) || 0) : 0;
+    const graceYears = parseInt(document.getElementById('gracePeriod').value, 10);
+    const targetDsr = parseFloat(document.getElementById('targetDsr').value) || 35; // 使用者自訂負擔比上限
+
+    const planType = document.getElementById('mortgagePlanType').value;
+    const isQingAn = (planType === 'qing_an');
+    const rateQingAn = parseFloat(document.getElementById('mortgageRateQingAn').value) || 1.775;
+    const ratePostQingAn = parseFloat(document.getElementById('mortgageRatePostQingAn').value) || 2.15;
+    const rateRegular = parseFloat(document.getElementById('mortgageRateRegular').value) || 2.2;
+
+    const decorExpense = Math.round(housePrice * 0.06);
+    const taxAndAgentFee = Math.round(housePrice * 0.015);
+    const rawDownPayment = Math.round(housePrice * (1 - loanRatio));
+    const totalOutlayOnBuy = rawDownPayment + decorExpense + taxAndAgentFee;
+    const selfDownNeeded = Math.max(0, totalOutlayOnBuy - parentsHelp);
+    const loanAmount = housePrice * loanRatio;
+
+    const monthlyHoldingTax = isBuyStrategy ? Math.round(1200 * (housePrice / 10000000)) : 0;
+    const baseBuyMaint = isBuyStrategy ? (parseFloat(document.getElementById('buyMaint').value) || 0) : 0;
+
+    function getMortgagePayment(passedYears) {
+      if (!isBuyStrategy || loanAmount <= 0) return 0;
+      if (passedYears >= mortgageYears) return 0;
+
+      if (passedYears < graceYears) {
+        const activeRate = isQingAn ? (passedYears < 5 ? rateQingAn : ratePostQingAn) : rateRegular;
+        return Math.round(loanAmount * (activeRate / 100) / 12);
+      }
+
+      const amortYears = Math.max(1, mortgageYears - graceYears);
+      const activeRate = isQingAn ? (passedYears < 5 ? rateQingAn : ratePostQingAn) : rateRegular;
+      return computePMT(activeRate, amortYears, loanAmount);
+    }
+
+    const initSavings = parseFloat(document.getElementById('initSavings').value) || 0;
+    const initStock = parseFloat(document.getElementById('initStock').value) || 0;
+
+    const isAutoPension = document.getElementById('autoPension').checked;
+    let pensionMonthly = parseFloat(document.getElementById('pension').value) || 0;
+    if (isAutoPension) {
+      const maxInsured = 45800;
+      const yearsWorked = Math.max(1, retireAge - startAge);
+      const pSelf = Math.min(baseSalarySelf, maxInsured);
+      let totalPension = pSelf * 0.0155 * yearsWorked + pSelf * 0.42;
+
+      if (isDoubleMode && marryAge <= retireAge) {
+        const spouseYearsWorked = Math.max(1, retireAge - marryAge);
+        const pSpouse = Math.min(baseSalarySpouse, maxInsured);
+        totalPension += (pSpouse * 0.0155 * spouseYearsWorked + pSpouse * 0.42);
+      }
+      pensionMonthly = Math.round(totalPension);
+      document.getElementById('pension').value = pensionMonthly;
+    }
+
+    function getStageBonus(age, currSalarySelf) {
+      if (age >= retireAge) return { mBonus: 0, yBonus: 0, fBonus: 0 };
+      if (age < 30) {
+        return {
+          mBonus: parseFloat(document.getElementById('mBonus_25').value) || 0,
+          yBonus: parseFloat(document.getElementById('yBonus_25').value) || 0,
+          fBonus: parseFloat(document.getElementById('fBonus_25').value) || 0
+        };
+      } else if (age < 35) {
+        return {
+          mBonus: parseFloat(document.getElementById('mBonus_30').value) || 0,
+          yBonus: parseFloat(document.getElementById('yBonus_30').value) || 0,
+          fBonus: parseFloat(document.getElementById('fBonus_30').value) || 0
+        };
+      } else if (age < 45) {
+        return {
+          mBonus: parseFloat(document.getElementById('mBonus_35').value) || 0,
+          yBonus: parseFloat(document.getElementById('yBonus_35').value) || 0,
+          fBonus: parseFloat(document.getElementById('fBonus_35').value) || 0
+        };
+      } else if (age < 55) {
+        const ratio = parseFloat(document.getElementById('yBonusMonth_45').value) || 1;
+        const yB = Math.round(currSalarySelf * ratio);
+        document.getElementById('lbl_yBonus_45').textContent = `年終 (${formatMoney(yB)}元)`;
+        return {
+          mBonus: parseFloat(document.getElementById('mBonus_45').value) || 0,
+          yBonus: yB,
+          fBonus: parseFloat(document.getElementById('fBonus_45').value) || 0
+        };
+      } else if (age < 65) {
+        const ratio = parseFloat(document.getElementById('yBonusMonth_55').value) || 1;
+        const yB = Math.round(currSalarySelf * ratio);
+        document.getElementById('lbl_yBonus_55').textContent = `年終 (${formatMoney(yB)}元)`;
+        return {
+          mBonus: parseFloat(document.getElementById('mBonus_55').value) || 0,
+          yBonus: yB,
+          fBonus: parseFloat(document.getElementById('fBonus_55').value) || 0
+        };
+      } else {
+        const ratio = parseFloat(document.getElementById('yBonusMonth_65').value) || 1;
+        const yB = Math.round(currSalarySelf * ratio);
+        return {
+          mBonus: parseFloat(document.getElementById('mBonus_65').value) || 0,
+          yBonus: yB,
+          fBonus: parseFloat(document.getElementById('fBonus_65').value) || 0
+        };
+      }
+    }
+
+    function getStageInvestment(age) {
+      if (age >= retireAge) return { inv50: 0, inv19: 0 };
+      if (age < 30) {
+        return {
+          inv50: parseFloat(document.getElementById('inv50_25').value) || 0,
+          inv19: parseFloat(document.getElementById('inv19_25').value) || 0
+        };
+      } else if (age < 35) {
+        return {
+          inv50: parseFloat(document.getElementById('inv50_30').value) || 0,
+          inv19: parseFloat(document.getElementById('inv19_30').value) || 0
+        };
+      } else if (age < 45) {
+        return {
+          inv50: parseFloat(document.getElementById('inv50_35').value) || 0,
+          inv19: parseFloat(document.getElementById('inv19_35').value) || 0
+        };
+      } else if (age < 55) {
+        return {
+          inv50: parseFloat(document.getElementById('inv50_45').value) || 0,
+          inv19: parseFloat(document.getElementById('inv19_45').value) || 0
+        };
+      } else if (age < 65) {
+        return {
+          inv50: parseFloat(document.getElementById('inv50_55').value) || 0,
+          inv19: parseFloat(document.getElementById('inv19_55').value) || 0
+        };
+      } else {
+        return {
+          inv50: parseFloat(document.getElementById('inv50_65').value) || 0,
+          inv19: parseFloat(document.getElementById('inv19_65').value) || 0
+        };
+      }
+    }
+
+    const dividendPolicy = document.getElementById('dividendPolicy').value;
+    const baseRent = parseFloat(document.getElementById('baseRent').value) || 0;
+
+    const expFood = parseFloat(document.getElementById('expFood').value) || 0;
+    const expFun = parseFloat(document.getElementById('expFun').value) || 0;
+    const expHealth = parseFloat(document.getElementById('expHealth').value) || 0;
+    const expPhone = parseFloat(document.getElementById('expPhone').value) || 0;
+    const expWater = parseFloat(document.getElementById('expWater').value) || 0;
+    const expPower = parseFloat(document.getElementById('expPower').value) || 0;
+    const expNet = parseFloat(document.getElementById('expNet').value) || 0;
+    const expInsurance = parseFloat(document.getElementById('expInsurance').value) || 0;
+    const expMisc = parseFloat(document.getElementById('expMisc').value) || 0;
+
+    const baseGeneralLiving = expFood + expFun + expHealth + expPhone + expWater + expPower + expNet + expInsurance + expMisc;
+    const childBornAge = parseInt(document.getElementById('childBornAge').value, 10);
+    const maternityPayRatio = parseFloat(document.getElementById('maternityPayType').value) || 1;
+
+    const endAge = 85;
+    const totalYears = endAge - startAge;
+
+    const ageList = [];
+    if (startAge === 25) ageList.push(25);
+    if (startAge <= 30) ageList.push(30);
+    for (let a = 35; a <= endAge; a += 10) {
+      ageList.push(a);
+    }
+
+    let currentSavings = initSavings;
+    let currentStock = initStock;
+    let downPaymentDeducted = false;
+    let noInvestSavings = initSavings + initStock;
+
+    const milestoneData = {};
+    const compareMilestone = {
+      investNet: {},
+      noInvestNet: {},
+      investSurplus: {},
+      noInvestSurplus: {}
+    };
+
+    const annualLabels = [];
+    const annualStock = [];
+    const annualSavings = [];
+    const annualTotalNet = [];
+    const annualNoInvestNet = [];
+
+    let bankruptcyAge = null;
+    let noInvestBankruptcyAge = null;
+
+    let canAffordHouse = true;
+    let savingsBeforeBuy = 0;
+    let recommendedBuyAge = null;
+    let buyYearMonthlyIncome = 0;
+
+    for (let yr = 0; yr <= totalYears; yr++) {
+      const currentAge = startAge + yr;
+
+      if (isBuyStrategy && currentAge === buyAge && !downPaymentDeducted) {
+        savingsBeforeBuy = currentSavings;
+        if (currentSavings < selfDownNeeded) {
+          canAffordHouse = false;
+        }
+        currentSavings -= selfDownNeeded;
+        noInvestSavings -= selfDownNeeded;
+        downPaymentDeducted = true;
+      }
+
+      if (isBuyStrategy && !canAffordHouse && recommendedBuyAge === null && yr > 0) {
+        if ((currentSavings + selfDownNeeded) >= selfDownNeeded) {
+          recommendedBuyAge = currentAge;
+        }
+      }
+
+      const isMaternityPhase = (childBornAge > 0 && currentAge >= childBornAge && currentAge <= (childBornAge + 2));
+
+      let monthlySalarySelf = 0;
+      let monthlySalarySpouse = 0;
+
+      if (currentAge < retireAge) {
+        let fullSalarySelf = Math.round(baseSalarySelf * Math.pow(1.02, yr));
+        if (userGender === 'female' && isMaternityPhase) {
+          monthlySalarySelf = Math.round(fullSalarySelf * maternityPayRatio);
+        } else {
+          monthlySalarySelf = fullSalarySelf;
+        }
+
+        if (isDoubleMode && currentAge >= marryAge) {
+          const spouseYearsAfterMarry = currentAge - marryAge;
+          let fullSalarySpouse = Math.round(baseSalarySpouse * Math.pow(1.02, spouseYearsAfterMarry));
+          if (userGender === 'male' && isMaternityPhase) {
+            monthlySalarySpouse = Math.round(fullSalarySpouse * maternityPayRatio);
+          } else {
+            monthlySalarySpouse = fullSalarySpouse;
+          }
+        }
+      }
+
+      let monthlySpouseBonusShare = 0;
+      if (isDoubleMode && currentAge >= marryAge && currentAge < retireAge) {
+        const spouseYearsAfterMarry = currentAge - marryAge;
+        const spouseInflation = Math.pow(1.02, spouseYearsAfterMarry);
+        const mB = mBonusSpouseBase * spouseInflation;
+        const yB = yBonusSpouseBase * spouseInflation;
+        const fB = fBonusSpouseBase * spouseInflation;
+        monthlySpouseBonusShare = Math.round(mB + (yB + fB) / 12);
+      }
+
+      const bonusObj = getStageBonus(currentAge, monthlySalarySelf);
+      const monthlyBonusShareSelf = bonusObj.mBonus + ((bonusObj.yBonus + bonusObj.fBonus) / 12);
+      const totalMonthlyEarned = monthlySalarySelf + monthlySalarySpouse + monthlyBonusShareSelf + monthlySpouseBonusShare;
+
+      if (isBuyStrategy && currentAge === buyAge) {
+        buyYearMonthlyIncome = totalMonthlyEarned;
+      }
+
+      let withdrawDiv = false;
+      if (currentAge >= retireAge) {
+        withdrawDiv = true;
+      } else if (dividendPolicy === 'from_0') {
+        withdrawDiv = true;
+      } else if (dividendPolicy === 'from_10' && yr >= 10) {
+        withdrawDiv = true;
+      } else if (dividendPolicy === 'from_20' && yr >= 20) {
+        withdrawDiv = true;
+      } else if (dividendPolicy === 'from_30' && yr >= 30) {
+        withdrawDiv = true;
+      } else if (dividendPolicy === 'from_40' && currentAge >= 55) {
+        withdrawDiv = true;
+      }
+
+      const invObj = getStageInvestment(currentAge);
+      const curInv = invObj.inv50 + invObj.inv19;
+
+      const monthlyDividend = (withdrawDiv && currentStock > 0) ? Math.round((currentStock * 0.045) / 12) : 0;
+      const monthlyPension = (currentAge >= retireAge) ? pensionMonthly : 0;
+
+      let monthlyHousing = 0;
+      let monthlyMaint = 0;
+
+      if (isBuyStrategy) {
+        if (currentAge < buyAge) {
+          monthlyHousing = Math.round(baseRent * Math.pow(1.02, yr));
+          monthlyMaint = 0;
+        } else if (currentAge >= buyAge && currentAge < (buyAge + mortgageYears)) {
+          const passedMortgageYears = currentAge - buyAge;
+          const mortgagePmt = getMortgagePayment(passedMortgageYears);
+          const currentHoldingTax = Math.round(monthlyHoldingTax * Math.pow(1.02, yr));
+          monthlyHousing = mortgagePmt + currentHoldingTax;
+          monthlyMaint = Math.round(baseBuyMaint * Math.pow(1.03, yr));
+        } else {
+          monthlyHousing = Math.round(monthlyHoldingTax * Math.pow(1.02, yr));
+          monthlyMaint = Math.round(baseBuyMaint * Math.pow(1.03, yr));
+        }
+      } else {
+        monthlyHousing = Math.round(baseRent * Math.pow(1.02, yr));
+        monthlyMaint = 0;
+      }
+
+      const baseChildExpense = getChildMonthlyExpense(currentAge, childBornAge);
+      const monthlyChild = Math.round(baseChildExpense * Math.pow(1.03, yr));
+      const monthlyLiving = Math.round(baseGeneralLiving * Math.pow(1.03, yr)) + monthlyChild + monthlyMaint;
+
+      const totalMonthlyIncome = totalMonthlyEarned + monthlyDividend + monthlyPension;
+      const totalMonthlyExpense = monthlyHousing + monthlyLiving + curInv;
+      const monthlySurplus = totalMonthlyIncome - totalMonthlyExpense;
+
+      const noInvestIncome = totalMonthlyEarned + monthlyPension;
+      const noInvestExpense = monthlyHousing + monthlyLiving;
+      const noInvestSurplus = noInvestIncome - noInvestExpense;
+
+      if (ageList.includes(currentAge)) {
+        milestoneData[currentAge] = {
+          salarySelf: monthlySalarySelf,
+          salarySpouse: monthlySalarySpouse,
+          bonusSelf: monthlyBonusShareSelf,
+          bonusSpouse: monthlySpouseBonusShare,
+          salaryTotal: totalMonthlyEarned,
+          dividend: monthlyDividend,
+          pension: monthlyPension,
+          totalIncome: totalMonthlyIncome,
+          housing: monthlyHousing,
+          living: monthlyLiving,
+          maint: monthlyMaint,
+          child: monthlyChild,
+          invest: curInv,
+          surplus: monthlySurplus,
+          stock: currentStock,
+          savings: currentSavings
+        };
+
+        compareMilestone.investNet[currentAge] = currentStock + currentSavings;
+        compareMilestone.noInvestNet[currentAge] = noInvestSavings;
+        compareMilestone.investSurplus[currentAge] = monthlySurplus;
+        compareMilestone.noInvestSurplus[currentAge] = noInvestSurplus;
+      }
+
+      const annualStockGrowthRate = withdrawDiv ? 0.06 : 0.09;
+      currentStock = Math.round(currentStock * (1 + annualStockGrowthRate) + (curInv * 12));
+
+      if (monthlySurplus >= 0) {
+        currentSavings = Math.round(currentSavings * 1.01 + (monthlySurplus * 12));
+      } else {
+        currentSavings += (monthlySurplus * 12);
+      }
+
+      if (noInvestSurplus >= 0) {
+        noInvestSavings = Math.round(noInvestSavings * 1.01 + (noInvestSurplus * 12));
+      } else {
+        noInvestSavings += (noInvestSurplus * 12);
+      }
+
+      const netWorthYear = currentStock + currentSavings;
+      if (netWorthYear < 0 && bankruptcyAge === null) {
+        bankruptcyAge = currentAge;
+      }
+      if (noInvestSavings < 0 && noInvestBankruptcyAge === null) {
+        noInvestBankruptcyAge = currentAge;
+      }
+
+      annualLabels.push(`${currentAge}歲`);
+      annualStock.push(currentStock);
+      annualSavings.push(currentSavings);
+      annualTotalNet.push(netWorthYear);
+      annualNoInvestNet.push(noInvestSavings);
+    }
+
+    // 房貸負擔比 DSR 核心精算
+    const postGraceFirstPayment = getMortgagePayment(graceYears);
+    const actualDsr = (buyYearMonthlyIncome > 0) ? Math.round((postGraceFirstPayment / buyYearMonthlyIncome) * 100) : 0;
+
+    let dsrHtml = '';
+    if (actualDsr > 50) {
+      dsrHtml = `<br><span style="color:var(--danger); font-weight:800;">🚨 嚴重警告：本息月繳佔買房時收入 ${actualDsr}%，已超過 50% 財務警戒線！極易發生斷供斷頭風險，強烈不建議！</span>`;
+    } else if (actualDsr > targetDsr) {
+      dsrHtml = `<br><span style="color:var(--accent); font-weight:700;">⚠️ 提醒：本息月繳佔月收入 ${actualDsr}%，已超過你設定的 ${targetDsr}% 上限，現金流較為緊繃。</span>`;
+    } else {
+      dsrHtml = `<br><span style="color:var(--primary-dark); font-weight:700;">✅ 房貸負擔安全：本息月繳佔月收入 ${actualDsr}%，符合你設定之 ${targetDsr}% 安全預算。</span>`;
+    }
+
+    const tipEl = document.getElementById('downPaymentTip');
+    if (!isBuyStrategy) {
+      tipEl.className = 'tip-box';
+      tipEl.innerHTML = `<strong>居住策略：全程租屋</strong><br>無須籌措頭期款與負擔裝潢規費及大樓管理費，父母贊助款不計入個人資產。退休後將持續面對年漲 2% 之租金支出。`;
+    } else {
+      const initialGracePayment = getMortgagePayment(0);
+      if (canAffordHouse) {
+        tipEl.className = (actualDsr > 50) ? 'tip-box warning' : 'tip-box';
+        tipEl.innerHTML = `
+          <strong>✅ 購屋置產規劃分析 (${buyAge} 歲買房)：</strong><br>
+          * 房屋頭期款 (${Math.round((1-loanRatio)*100)}%)：NT$ ${formatMoney(rawDownPayment)} 元<br>
+          * 自動計入裝潢家電 (6%)：NT$ ${formatMoney(decorExpense)} 元，代書與契稅規費 (1.5%)：NT$ ${formatMoney(taxAndAgentFee)} 元<br>
+          * <strong>購屋總需現金：NT$ ${formatMoney(totalOutlayOnBuy)} 元</strong> (扣除父母贊助 NT$ ${formatMoney(parentsHelp)} 元後，<strong>自己需備：NT$ ${formatMoney(selfDownNeeded)} 元</strong>)<br>
+          * <strong>資金充裕</strong>：${buyAge} 歲買房時預估活存有 NT$ ${formatMoney(savingsBeforeBuy)} 元，扣除自備款後仍保有安全週轉金。<br>
+          * 房貸試算 (${isQingAn ? '新青安專案' : '一般房貸'})：${graceYears > 0 ? `前 ${graceYears} 年寬限期約 NT$ ${formatMoney(initialGracePayment)}/月 (純繳息)，第 ${graceYears + 1} 年起本息攤還約 NT$ ${formatMoney(postGraceFirstPayment)}/月` : `本息均攤約 NT$ ${formatMoney(postGraceFirstPayment)}/月`}${dsrHtml}
+        `;
+      } else {
+        tipEl.className = 'tip-box warning';
+        const deficit = selfDownNeeded - savingsBeforeBuy;
+        tipEl.innerHTML = `
+          <strong>⚠️ 警告：${buyAge} 歲存款不足，無法負擔買房自備款！</strong><br>
+          * 購屋含裝潢規費扣除父母贊助後共需：NT$ ${formatMoney(selfDownNeeded)} 元<br>
+          * ${buyAge} 歲時活存僅有 NT$ ${formatMoney(savingsBeforeBuy)} 元，<strong>資金缺口達 NT$ ${formatMoney(deficit)} 元</strong>！<br>
+          * <strong>改善建議</strong>：依目前每年儲蓄速度，建議<strong>延後至 ${recommendedBuyAge ? recommendedBuyAge + ' 歲' : (buyAge + 4) + ' 歲'} 再購屋</strong>，或適度調降房屋總價。${dsrHtml}
+        `;
+      }
+    }
+
+    const retirePointData = milestoneData[retireAge] || milestoneData[Object.keys(milestoneData)[0]];
+    const finalData = milestoneData[endAge];
+
+    const kpiSurplus = document.getElementById('kpiSurplus');
+    const kpiDesc = document.getElementById('kpiDesc');
+    const retireCard = document.getElementById('retireCard');
+    const netWorthCard = document.getElementById('netWorthCard');
+
+    if (retirePointData.surplus >= 0) {
+      kpiSurplus.textContent = `+ NT$ ${formatMoney(retirePointData.surplus)}`;
+      kpiSurplus.style.color = "var(--primary-dark)";
+      retireCard.classList.remove('warning');
+    } else {
+      const deficit = Math.abs(retirePointData.surplus);
+      kpiSurplus.textContent = `- NT$ ${formatMoney(deficit)}`;
+      kpiSurplus.style.color = "var(--danger)";
+      retireCard.classList.add('warning');
+    }
+
+    if (bankruptcyAge !== null) {
+      const sustainYears = bankruptcyAge - retireAge;
+      if (sustainYears > 0) {
+        kpiDesc.innerHTML = `<span style="color:var(--danger); font-weight:700;">⚠️ 退休後可支撐 ${sustainYears} 年！</span><br>總資產於 <strong>${bankruptcyAge} 歲（退休第 ${sustainYears} 年）</strong> 被通膨開銷耗盡。`;
+      } else {
+        kpiDesc.innerHTML = `<span style="color:var(--danger); font-weight:700;">⚠️ 工作期現金流透支！</span><br>總資產於 <strong>${bankruptcyAge} 歲</strong> 被負債吃平。`;
+      }
+    } else {
+      kpiDesc.innerHTML = `<span style="color:var(--primary-dark); font-weight:700;">✅ 現金流充裕安全！</span><br>資產永不歸零，可安穩支撐至 85 歲以上。`;
+    }
+
+    const totalNet85 = finalData.stock + finalData.savings;
+    const kpiNetWorth = document.getElementById('kpiNetWorth');
+    if (totalNet85 >= 0) {
+      kpiNetWorth.textContent = `${(totalNet85 / 10000).toFixed(0)} 萬元`;
+      kpiNetWorth.style.color = "var(--text)";
+      netWorthCard.classList.remove('warning');
+    } else {
+      kpiNetWorth.textContent = `-${Math.abs(totalNet85 / 10000).toFixed(0)} 萬元`;
+      kpiNetWorth.style.color = "var(--danger)";
+      netWorthCard.classList.add('warning');
+    }
+
+    document.getElementById('kpiStockRatio').textContent = `股票 ${(finalData.stock / 10000).toFixed(0)} 萬 / 存款 ${(finalData.savings / 10000).toFixed(0)} 萬`;
+
+    const thRow = document.getElementById('tableHeaderRow');
+    thRow.innerHTML = `<th>項目</th>` + ageList.map(a => `<th>${a} 歲${a === retireAge ? ' (退休)' : ''}</th>`).join('');
+
+    const tbody = document.getElementById('resultTableBody');
+    tbody.innerHTML = `
+      <tr style="background:#f1f5f9; font-weight:700;"><td>月總收入 (合計)</td>${ageList.map(a => `<td>${formatMoney(milestoneData[a].totalIncome)}</td>`).join('')}</tr>
+      <tr class="sub-row"><td> ├ 本人薪資 (含獎金)</td>${ageList.map(a => `<td>${formatMoney(milestoneData[a].salarySelf + milestoneData[a].bonusSelf)}</td>`).join('')}</tr>
+      ${isDoubleMode ? `<tr class="sub-row" style="color:var(--purple)"><td> ├ 另一半薪獎 (${marryAge}歲結婚起算)</td>${ageList.map(a => `<td>${formatMoney(milestoneData[a].salarySpouse + milestoneData[a].bonusSpouse)}</td>`).join('')}</tr>` : ''}
+      <tr class="sub-row"><td> ├ 每月股票配息收入</td>${ageList.map(a => `<td style="color:${milestoneData[a].dividend > 0 ? 'var(--primary-dark)' : 'inherit'}; font-weight:${milestoneData[a].dividend > 0 ? '700' : 'normal'}">${formatMoney(milestoneData[a].dividend)}</td>`).join('')}</tr>
+      <tr class="sub-row"><td> └ 每月退休勞保勞退年金</td>${ageList.map(a => `<td>${formatMoney(milestoneData[a].pension)}</td>`).join('')}</tr>
+      <tr><td>每月居住成本 (${isBuyStrategy ? '房貸/稅/租' : '房租'})</td>${ageList.map(a => `<td>${formatMoney(milestoneData[a].housing)}</td>`).join('')}</tr>
+      <tr><td>每月基礎開銷 (含管理費與雜支)</td>${ageList.map(a => `<td>${formatMoney(milestoneData[a].living - milestoneData[a].child)}</td>`).join('')}</tr>
+      <tr class="sub-row"><td> └ 其中：大樓管理費</td>${ageList.map(a => `<td>${formatMoney(milestoneData[a].maint)}</td>`).join('')}</tr>
+      <tr><td>每月小孩教育育兒開銷</td>${ageList.map(a => `<td>${formatMoney(milestoneData[a].child)}</td>`).join('')}</tr>
+      <tr><td>每月投資提撥 (分階段)</td>${ageList.map(a => `<td>${formatMoney(milestoneData[a].invest)}</td>`).join('')}</tr>
+      <tr><td><strong>每月留存活存結餘</strong></td>${ageList.map(a => `<td><strong style="color:${milestoneData[a].surplus >= 0 ? 'var(--text)' : 'var(--danger)'}">${formatMoney(milestoneData[a].surplus)}</strong></td>`).join('')}</tr>
+      <tr style="background:#f8fafc"><td><strong>股票投資資產總額</strong></td>${ageList.map(a => `<td><strong style="color:var(--primary-dark)">${formatMoney(milestoneData[a].stock)}</strong></td>`).join('')}</tr>
+      <tr style="background:#f8fafc"><td><strong>活存存款累計總額</strong></td>${ageList.map(a => `<td><span style="color:${milestoneData[a].savings >= 0 ? 'var(--text)' : 'var(--danger)'}">${formatMoney(milestoneData[a].savings)}</span></td>`).join('')}</tr>
+    `;
+
+    const compTh = document.getElementById('compareHeaderRow');
+    compTh.innerHTML = `<th>情境方案</th>` + ageList.map(a => `<th>${a} 歲${a === retireAge ? ' (退休)' : ''}</th>`).join('');
+
+    const compTbody = document.getElementById('compareTableBody');
+    compTbody.innerHTML = `
+      <tr style="background:#ecfdf5; font-weight:700;">
+        <td style="color:var(--primary-dark)">方案 A：定期定額投資 ETF (身家總額)</td>
+        ${ageList.map(a => `<td style="color:var(--primary-dark)">${formatMoney(compareMilestone.investNet[a])}</td>`).join('')}
+      </tr>
+      <tr class="sub-row">
+        <td> └ 退休後每月現金流結餘</td>
+        ${ageList.map(a => `<td style="color:${compareMilestone.investSurplus[a] >= 0 ? 'var(--primary-dark)' : 'var(--danger)'}">${formatMoney(compareMilestone.investSurplus[a])}</td>`).join('')}
+      </tr>
+      <tr style="background:#fef2f2; font-weight:700;">
+        <td style="color:var(--danger)">方案 B：不投資 (純放定存活存)</td>
+        ${ageList.map(a => `<td style="color:${compareMilestone.noInvestNet[a] >= 0 ? 'var(--text)' : 'var(--danger)'}">${formatMoney(compareMilestone.noInvestNet[a])}</td>`).join('')}
+      </tr>
+      <tr class="sub-row">
+        <td> └ 退休後每月現金流結餘 (無股息)</td>
+        ${ageList.map(a => `<td style="color:${compareMilestone.noInvestSurplus[a] >= 0 ? 'var(--text)' : 'var(--danger)'}">${formatMoney(compareMilestone.noInvestSurplus[a])}</td>`).join('')}
+      </tr>
+      <tr style="background:#f8fafc; font-weight:800;">
+        <td style="color:var(--purple)">投資產生的複利身家差距 (A - B)</td>
+        ${ageList.map(a => {
+          const diff = compareMilestone.investNet[a] - compareMilestone.noInvestNet[a];
+          return `<td style="color:var(--purple)">+ ${(diff / 10000).toFixed(0)} 萬</td>`;
+        }).join('')}
+      </tr>
+    `;
+
+    const compareTip = document.getElementById('compareSummaryTip');
+    const finalDiffWan = ((compareMilestone.investNet[endAge] - compareMilestone.noInvestNet[endAge]) / 10000).toFixed(0);
+    compareTip.innerHTML = `
+      <strong>💡 投資與不投資關鍵差距結論：</strong><br>
+      * <strong>若不投資純放銀行</strong>：因缺乏年化 9% 複利滾存與每年 4.5% 配息分擔開銷，面對 3% 通膨，存款將在 <strong>${noInvestBankruptcyAge ? noInvestBankruptcyAge + ' 歲' : '85 歲前'}</strong> 提前耗盡翻負。<br>
+      * <strong>若堅持分階段投資 ETF</strong>：85 歲時身家總資產比不投資<strong>多出約 NT$ ${formatMoney(finalDiffWan)} 萬元</strong>，退休後更有每月數萬至十幾萬的被動配息現金流，達成終身資產不歸零！
+    `;
+
+    updateLineChart(annualLabels, annualStock, annualSavings, annualTotalNet, annualNoInvestNet);
+  }
+
+  function updateLineChart(labels, stockData, saveData, netWorthData, noInvestData) {
+    const ctx = document.getElementById('assetChart').getContext('2d');
+    if (chartInstance) chartInstance.destroy();
+    chartInstance = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: labels,
+        datasets: [
+          {
+            label: '投資組：總身家淨值 (股票+存款)',
+            data: netWorthData,
+            borderColor: '#10b981',
+            backgroundColor: 'rgba(16, 185, 129, 0.08)',
+            borderWidth: 3.5,
+            fill: false,
+            tension: 0.25,
+            pointRadius: 2
+          },
+          {
+            label: '不投資組：純放存款身家',
+            data: noInvestData,
+            borderColor: '#ef4444',
+            backgroundColor: 'rgba(239, 68, 68, 0.08)',
+            borderWidth: 3,
+            borderDash: [5, 5],
+            fill: false,
+            tension: 0.25,
+            pointRadius: 2
+          },
+          {
+            label: '投資組：股票市值',
+            data: stockData,
+            borderColor: '#8b5cf6',
+            borderWidth: 2,
+            borderDash: [3, 3],
+            fill: false,
+            tension: 0.25,
+            pointRadius: 1
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        interaction: {
+          mode: 'index',
+          intersect: false
+        },
+        scales: {
+          x: {
+            grid: { display: false },
+            ticks: { maxTicksLimit: 12 }
+          },
+          y: {
+            grid: {
+              color: ctx => (ctx.tick.value === 0 ? '#ef4444' : '#e2e8f0'),
+              lineWidth: ctx => (ctx.tick.value === 0 ? 2 : 1)
+            },
+            ticks: {
+              callback: value => `${(value / 10000).toFixed(0)}萬`
+            }
+          }
+        },
+        plugins: {
+          legend: { position: 'bottom' }
+        }
+      }
+    });
+  }
+
+  window.onload = () => {
+    updateStageVisibility();
+    handleSalaryModeChange();
+    handleHousingStrategyChange();
+    handleMortgagePlanChange();
+    handleChildToggle();
+  };
+</script>
+</body>
+</html>
