@@ -837,7 +837,7 @@
         </div>
       </div>
 
-      <!-- 投資提撥 (分階段設定) -->
+      <!-- 投資提撥 (分階段設定：全面各 3000 元起跑) -->
       <div class="section-subtitle">📈 投資提撥 (自訂各階每月投入)</div>
       <div id="investStagesContainer">
         <!-- 25~29歲 -->
@@ -861,11 +861,11 @@
           <div class="input-row">
             <div class="form-group">
               <label>市值型 ETF (NT$)</label>
-              <input type="number" id="inv50_30" value="30000" step="1000" oninput="calculate()">
+              <input type="number" id="inv50_30" value="3000" step="1000" oninput="calculate()">
             </div>
             <div class="form-group">
               <label>高股息 ETF (NT$)</label>
-              <input type="number" id="inv19_30" value="20000" step="1000" oninput="calculate()">
+              <input type="number" id="inv19_30" value="3000" step="1000" oninput="calculate()">
             </div>
           </div>
         </div>
@@ -876,11 +876,11 @@
           <div class="input-row">
             <div class="form-group">
               <label>市值型 ETF (NT$)</label>
-              <input type="number" id="inv50_35" value="20000" step="1000" oninput="calculate()">
+              <input type="number" id="inv50_35" value="3000" step="1000" oninput="calculate()">
             </div>
             <div class="form-group">
               <label>高股息 ETF (NT$)</label>
-              <input type="number" id="inv19_35" value="15000" step="1000" oninput="calculate()">
+              <input type="number" id="inv19_35" value="3000" step="1000" oninput="calculate()">
             </div>
           </div>
         </div>
@@ -891,11 +891,11 @@
           <div class="input-row">
             <div class="form-group">
               <label>市值型 ETF (NT$)</label>
-              <input type="number" id="inv50_45" value="15000" step="1000" oninput="calculate()">
+              <input type="number" id="inv50_45" value="3000" step="1000" oninput="calculate()">
             </div>
             <div class="form-group">
               <label>高股息 ETF (NT$)</label>
-              <input type="number" id="inv19_45" value="10000" step="1000" oninput="calculate()">
+              <input type="number" id="inv19_45" value="3000" step="1000" oninput="calculate()">
             </div>
           </div>
         </div>
@@ -906,11 +906,11 @@
           <div class="input-row">
             <div class="form-group">
               <label>市值型 ETF (NT$)</label>
-              <input type="number" id="inv50_55" value="10000" step="1000" oninput="calculate()">
+              <input type="number" id="inv50_55" value="3000" step="1000" oninput="calculate()">
             </div>
             <div class="form-group">
               <label>高股息 ETF (NT$)</label>
-              <input type="number" id="inv19_55" value="15000" step="1000" oninput="calculate()">
+              <input type="number" id="inv19_55" value="3000" step="1000" oninput="calculate()">
             </div>
           </div>
         </div>
@@ -921,11 +921,11 @@
           <div class="input-row">
             <div class="form-group">
               <label>市值型 ETF (NT$)</label>
-              <input type="number" id="inv50_65" value="0" step="1000" oninput="calculate()">
+              <input type="number" id="inv50_65" value="3000" step="1000" oninput="calculate()">
             </div>
             <div class="form-group">
               <label>高股息 ETF (NT$)</label>
-              <input type="number" id="inv19_65" value="0" step="1000" oninput="calculate()">
+              <input type="number" id="inv19_65" value="3000" step="1000" oninput="calculate()">
             </div>
           </div>
         </div>
@@ -996,7 +996,6 @@
           </table>
         </div>
 
-        <div class="card-title">📉 60年總資產走勢曲線 (投資 vs 不投資)</div>
         <div class="chart-container">
           <canvas id="assetChart"></canvas>
         </div>
@@ -1391,7 +1390,6 @@
       const curPrice50 = 80 * Math.pow(1.07, yr);
       const curPrice19 = 22 * Math.pow(1.02, yr);
 
-      // 買房自備款扣抵 (活存不足強制賣股票補足自備款)
       if (isBuyStrategy && currentAge === buyAge && !downPaymentDeducted) {
         savingsBeforeBuy = currentSavings;
         const totalStockWorthNow = (totalShares50 * curPrice50) + (totalShares19 * curPrice19);
@@ -1482,7 +1480,6 @@
         withdrawDiv = true;
       }
 
-      // 當期真實張數配息
       const annualDiv50 = (totalShares50 / 1000) * 3000;
       const annualDiv19 = (totalShares19 / 1000) * 1800;
       const actualTotalAnnualDiv = annualDiv50 + annualDiv19;
@@ -1549,10 +1546,8 @@
         currentSavings = Math.round(currentSavings * 1.01 + annualCashDelta);
         finalMonthlySurplusAfterCover = rawMonthlySurplus;
       } else {
-        // 出現赤字：優先扣活存
         currentSavings += annualCashDelta;
         
-        // 活存見底透支：強制賣股票補平
         if (currentSavings < 0) {
           const deficit = Math.abs(currentSavings);
           const val50 = totalShares50 * curPrice50;
@@ -1561,9 +1556,8 @@
             totalShares50 -= (deficit / curPrice50);
             annualSoldStockVal = deficit;
             currentSavings = 0;
-            finalMonthlySurplusAfterCover = 0; // 成功完全平損！
+            finalMonthlySurplusAfterCover = 0;
           } else {
-            // 市值型賣光，動用高股息
             annualSoldStockVal += val50;
             const remainDeficit = deficit - val50;
             totalShares50 = 0;
@@ -1572,9 +1566,8 @@
               totalShares19 -= (remainDeficit / curPrice19);
               annualSoldStockVal += remainDeficit;
               currentSavings = 0;
-              finalMonthlySurplusAfterCover = 0; // 成功完全平損！
+              finalMonthlySurplusAfterCover = 0;
             } else {
-              // 股票全賣光依然不夠生活費：人生真正破產！
               annualSoldStockVal += val19;
               totalShares19 = 0;
               const unpayableDeficit = remainDeficit - val19;
@@ -1583,7 +1576,6 @@
             }
           }
         } else {
-          // 雖然原始收支赤字，但既有活存足以扣抵
           finalMonthlySurplusAfterCover = 0;
         }
       }
@@ -1625,8 +1617,8 @@
           maint: monthlyMaint,
           child: monthlyChild,
           invest: Math.round(actualInvMonthly),
-          rawSurplus: rawMonthlySurplus,                     // 平損前原始缺口
-          finalSurplus: finalMonthlySurplusAfterCover,        // 平損後最終結餘
+          rawSurplus: rawMonthlySurplus,
+          finalSurplus: finalMonthlySurplusAfterCover,
           stock: currentStockMarketValue,
           savings: Math.max(0, currentSavings),
           soldMonthly: Math.round(annualSoldStockVal / 12),
