@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="google" content="notranslate">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>人生生存試算器 60年長期財務模型 (真實無負債閉環版)</title>
+  <title>人生生存試算器 60年長期財務模型</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     :root {
@@ -973,7 +973,7 @@
 
         <div class="kpi-grid">
           <div class="kpi-card" id="retireCard">
-            <div class="kpi-title">退休首年每月收支差額 (含配息)</div>
+            <div class="kpi-title">退休首年每月收支差額 (股票平損前)</div>
             <div class="kpi-value" id="kpiSurplus">+ NT$ 12,400</div>
             <div class="kpi-desc" id="kpiDesc">計算中...</div>
           </div>
@@ -1360,7 +1360,6 @@
     let downPaymentDeducted = false;
     let noInvestSavings = initSavings + initStock;
 
-    // 初始股票張數轉換
     let totalShares50 = (initStock * 0.6) / 80;
     let totalShares19 = (initStock * 0.4) / 22;
 
@@ -1516,13 +1515,11 @@
       const monthlyChild = Math.round(baseChildExpense * Math.pow(1.03, yr));
       const monthlyLiving = Math.round(baseGeneralLiving * Math.pow(1.03, yr)) + monthlyChild + monthlyMaint;
 
-      // 【核心健全現金流約束鐵律】：
-      // 1. 先計算「不買股票前的基礎生活結餘 (Cash Flow Before Invest)」
+      // 【量入為出現金流約束】
       const totalIncome = totalMonthlyEarned + monthlyDividend + monthlyPension;
       const totalFixedExpense = monthlyHousing + monthlyLiving;
       const freeCashFlowMonthly = totalIncome - totalFixedExpense;
 
-      // 2. 檢驗投資提撥：若可用現金小於計畫投資額，強制「有多少投多少，絕不借錢透支買股」！
       const invObj = getStageInvestment(currentAge);
       const plannedInvMonthly = invObj.inv50 + invObj.inv19;
       
@@ -1531,7 +1528,6 @@
       let actualInv19Monthly = 0;
 
       if (currentAge < retireAge && plannedInvMonthly > 0) {
-        // 可用預算 = 當月收支結餘 + 既有活存能支應的月均額
         const availableToInvest = Math.max(0, freeCashFlowMonthly + (currentSavings / 12));
         actualInvMonthly = Math.min(plannedInvMonthly, availableToInvest);
 
@@ -1542,20 +1538,21 @@
         }
       }
 
-      // 3. 扣除實際投資提撥後的最終每月留存
-      const monthlySurplus = freeCashFlowMonthly - actualInvMonthly;
-      const annualCashDelta = monthlySurplus * 12;
+      // 【未賣股票平損前的原始收支缺口】
+      const rawMonthlySurplus = freeCashFlowMonthly - actualInvMonthly;
+      const annualCashDelta = rawMonthlySurplus * 12;
 
-      // 4. 活存與自動變賣股票平損機制
       let annualSoldStockVal = 0;
+      let finalMonthlySurplusAfterCover = rawMonthlySurplus;
 
       if (annualCashDelta >= 0) {
         currentSavings = Math.round(currentSavings * 1.01 + annualCashDelta);
+        finalMonthlySurplusAfterCover = rawMonthlySurplus;
       } else {
         // 出現赤字：優先扣活存
         currentSavings += annualCashDelta;
         
-        // 活存見底透支：強制賣市值型股票補平到 0（絕不允許負活存）
+        // 活存見底透支：強制賣股票補平
         if (currentSavings < 0) {
           const deficit = Math.abs(currentSavings);
           const val50 = totalShares50 * curPrice50;
@@ -1564,6 +1561,7 @@
             totalShares50 -= (deficit / curPrice50);
             annualSoldStockVal = deficit;
             currentSavings = 0;
+            finalMonthlySurplusAfterCover = 0; // 成功完全平損！
           } else {
             // 市值型賣光，動用高股息
             annualSoldStockVal += val50;
@@ -1574,32 +1572,34 @@
               totalShares19 -= (remainDeficit / curPrice19);
               annualSoldStockVal += remainDeficit;
               currentSavings = 0;
+              finalMonthlySurplusAfterCover = 0; // 成功完全平損！
             } else {
               // 股票全賣光依然不夠生活費：人生真正破產！
               annualSoldStockVal += val19;
               totalShares19 = 0;
-              currentSavings = - (remainDeficit - val19);
+              const unpayableDeficit = remainDeficit - val19;
+              currentSavings = - unpayableDeficit;
+              finalMonthlySurplusAfterCover = - Math.round(unpayableDeficit / 12);
             }
           }
+        } else {
+          // 雖然原始收支赤字，但既有活存足以扣抵
+          finalMonthlySurplusAfterCover = 0;
         }
       }
 
-      // 當年剩餘股票總市值
       const currentStockMarketValue = Math.round((totalShares50 * curPrice50) + (totalShares19 * curPrice19));
 
-      // 累積期未提領配息再投入買新張數
       if (!withdrawDiv && actualTotalAnnualDiv > 0 && currentStockMarketValue > 0) {
         totalShares50 += ((actualTotalAnnualDiv * 0.5) / curPrice50);
         totalShares19 += ((actualTotalAnnualDiv * 0.5) / curPrice19);
       }
 
-      // 依「實際能夠投入的現金」累積新張數 (絕無憑空借貸生張數)
       if (actualInvMonthly > 0) {
         totalShares50 += ((actualInv50Monthly * 12) / curPrice50);
         totalShares19 += ((actualInv19Monthly * 12) / curPrice19);
       }
 
-      // 不投資組
       const noInvestIncome = totalMonthlyEarned + monthlyPension;
       const noInvestExpense = monthlyHousing + monthlyLiving;
       const noInvestSurplus = noInvestIncome - noInvestExpense;
@@ -1625,7 +1625,8 @@
           maint: monthlyMaint,
           child: monthlyChild,
           invest: Math.round(actualInvMonthly),
-          surplus: monthlySurplus,
+          rawSurplus: rawMonthlySurplus,                     // 平損前原始缺口
+          finalSurplus: finalMonthlySurplusAfterCover,        // 平損後最終結餘
           stock: currentStockMarketValue,
           savings: Math.max(0, currentSavings),
           soldMonthly: Math.round(annualSoldStockVal / 12),
@@ -1635,7 +1636,7 @@
 
         compareMilestone.investNet[currentAge] = currentStockMarketValue + Math.max(0, currentSavings);
         compareMilestone.noInvestNet[currentAge] = noInvestSavings;
-        compareMilestone.investSurplus[currentAge] = monthlySurplus;
+        compareMilestone.investSurplus[currentAge] = rawMonthlySurplus;
         compareMilestone.noInvestSurplus[currentAge] = noInvestSurplus;
       }
 
@@ -1702,12 +1703,12 @@
     const retireCard = document.getElementById('retireCard');
     const netWorthCard = document.getElementById('netWorthCard');
 
-    if (retirePointData.surplus >= 0) {
-      kpiSurplus.textContent = `+ NT$ ${formatMoney(retirePointData.surplus)}`;
+    if (retirePointData.rawSurplus >= 0) {
+      kpiSurplus.textContent = `+ NT$ ${formatMoney(retirePointData.rawSurplus)}`;
       kpiSurplus.style.color = "var(--primary-dark)";
       retireCard.classList.remove('warning');
     } else {
-      const deficit = Math.abs(retirePointData.surplus);
+      const deficit = Math.abs(retirePointData.rawSurplus);
       kpiSurplus.textContent = `- NT$ ${formatMoney(deficit)}`;
       kpiSurplus.style.color = "var(--danger)";
       retireCard.classList.add('warning');
@@ -1721,12 +1722,12 @@
 
     const totalNet85 = finalData.stock + finalData.savings;
     const kpiNetWorth = document.getElementById('kpiNetWorth');
-    if (totalNet85 >= 0) {
+    if (totalNet85 > 0) {
       kpiNetWorth.textContent = `${(totalNet85 / 10000).toFixed(0)} 萬元`;
       kpiNetWorth.style.color = "var(--text)";
       netWorthCard.classList.remove('warning');
     } else {
-      kpiNetWorth.textContent = `-${Math.abs(totalNet85 / 10000).toFixed(0)} 萬元`;
+      kpiNetWorth.textContent = `0 萬元 (已耗盡)`;
       kpiNetWorth.style.color = "var(--danger)";
       netWorthCard.classList.add('warning');
     }
@@ -1749,7 +1750,32 @@
       <tr class="sub-row"><td> └ 其中：大樓管理費</td>${ageList.map(a => `<td>${formatMoney(milestoneData[a].maint)}</td>`).join('')}</tr>
       <tr><td>每月小孩教育育兒開銷</td>${ageList.map(a => `<td>${formatMoney(milestoneData[a].child)}</td>`).join('')}</tr>
       <tr><td>每月實際投資提撥 (量入為出不透支)</td>${ageList.map(a => `<td>${formatMoney(milestoneData[a].invest)}</td>`).join('')}</tr>
-      <tr style="background:#fff1f2; font-weight:700;"><td>每月現金缺口 (自動賣股票平損)</td>${ageList.map(a => `<td style="color:${milestoneData[a].soldMonthly > 0 ? 'var(--danger)' : '#64748b'}">${milestoneData[a].soldMonthly > 0 ? `- NT$ ${formatMoney(milestoneData[a].soldMonthly)}` : '0'}</td>`).join('')}</tr>
+      
+      <!-- 兩行拆分：平損前原始缺口 vs 賣股平損後最終結餘 -->
+      <tr style="background:#fef2f2; font-weight:700;">
+        <td style="color:var(--danger)">每月原始收支缺口 (股票平損前)</td>
+        ${ageList.map(a => {
+          const val = milestoneData[a].rawSurplus;
+          return `<td style="color:${val < 0 ? 'var(--danger)' : 'var(--primary-dark)'}">${val < 0 ? `- NT$ ${formatMoney(Math.abs(val))}` : `+ NT$ ${formatMoney(val)}`}</td>`;
+        }).join('')}
+      </tr>
+      <tr style="background:#fff7ed; font-weight:700;">
+        <td style="color:#c2410c">每月最終收支結餘 (賣股平損後)</td>
+        ${ageList.map(a => {
+          const finalVal = milestoneData[a].finalSurplus;
+          const soldVal = milestoneData[a].soldMonthly;
+          if (finalVal < 0) {
+            return `<td style="color:var(--danger)">- NT$ ${formatMoney(Math.abs(finalVal))} (已破產)</td>`;
+          } else if (soldVal > 0) {
+            return `<td style="color:var(--primary-dark)">NT$ 0 (賣股補平)</td>`;
+          } else if (milestoneData[a].rawSurplus < 0) {
+            return `<td style="color:var(--primary-dark)">NT$ 0 (活存補平)</td>`;
+          } else {
+            return `<td style="color:var(--primary-dark)">+ NT$ ${formatMoney(finalVal)}</td>`;
+          }
+        }).join('')}
+      </tr>
+
       <tr style="background:#f8fafc"><td><strong>股票投資資產總市值 (真實扣減)</strong></td>${ageList.map(a => `<td><strong style="color:var(--primary-dark)">${formatMoney(milestoneData[a].stock)}</strong></td>`).join('')}</tr>
       <tr style="background:#f8fafc"><td><strong>活存存款累計總額 (不為負數)</strong></td>${ageList.map(a => `<td><span style="color:var(--text); font-weight:600;">${formatMoney(milestoneData[a].savings)}</span></td>`).join('')}</tr>
     `;
@@ -1785,13 +1811,25 @@
     `;
 
     const compareTip = document.getElementById('compareSummaryTip');
-    const finalDiffWan = ((compareMilestone.investNet[endAge] - compareMilestone.noInvestNet[endAge]) / 10000).toFixed(0);
-    compareTip.innerHTML = `
+    const finalDiffWan = Math.round((compareMilestone.investNet[endAge] - compareMilestone.noInvestNet[endAge]) / 10000);
+
+    let summaryText = `
       <strong>💡 投資與不投資關鍵差距結論：</strong><br>
       * <strong>真實閉環運作</strong>：模型已徹底鎖定「量入為出不透支」鐵律！沒錢時自動停止定期定額，晚年赤字自動變賣市值型股票，活存永遠不為負數！<br>
       * <strong>不投資純放銀行</strong>：面對 3% 通膨，存款將在 <strong>${noInvestBankruptcyAge ? noInvestBankruptcyAge + ' 歲' : '85 歲前'}</strong> 提早耗盡翻負。<br>
-      * <strong>分階段投資 ETF</strong>：85 歲時身家總資產比不投資<strong>多出約 NT$ ${formatMoney(finalDiffWan)} 萬元</strong>，即便晚年需變賣股票過日子，龐大的複利母體依然能源源不絕提供資產支援！
     `;
+
+    if (bankruptcyAge !== null) {
+      summaryText += `
+      * <strong style="color:var(--danger)">⚠️ 投資方案警示</strong>：本方案股票與存款於 <strong>${bankruptcyAge} 歲</strong> 全數耗盡破產！雖然比不投資（${noInvestBankruptcyAge ? noInvestBankruptcyAge + ' 歲翻負' : '早早耗盡'}）多支撐了數年，但仍建議適度降低生活開銷、調降房價或增加工作年資，避免晚年資產見底！
+      `;
+    } else {
+      summaryText += `
+      * <strong style="color:var(--primary-dark)">✅ 分階段投資 ETF</strong>：85 歲時身家總資產比不投資<strong>多出約 NT$ ${formatMoney(finalDiffWan)} 萬元</strong>，即便晚年需變賣股票過日子，龐大的複利母體依然能源源不絕提供資產支援！
+      `;
+    }
+
+    compareTip.innerHTML = summaryText;
 
     updateLineChart(annualLabels, annualStock, annualSavings, annualTotalNet, annualNoInvestNet);
   }
